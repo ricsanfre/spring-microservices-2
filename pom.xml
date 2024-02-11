@@ -12,6 +12,12 @@
   <name>microservices</name>
   <!-- FIXME change it to the project's website -->
   <url>http://www.example.com</url>
+  <modules>
+    <module>product-service</module>
+    <module>review-service</module>
+    <module>recommendation-service</module>
+    <module>product-composite-service</module>
+  </modules>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

@@ -206,10 +206,40 @@ Create Maven parent project: `microservices`, containing Spring-boot plugins and
 
 # Create project submodules
 
+- Create new directory 
+  
   ```shell
-  cd microservices
-  mvn archetype:generate -DgroupId=com.ricsanfre.microservices -DartifactId=product-service
-  mvn archetype:generate -DgroupId=com.ricsanfre.microservices -DartifactId=review-service
-  mvn archetype:generate -DgroupId=com.ricsanfre.microservices -DartifactId=recommendation-service
-  mvn archetype:generate -DgroupId=com.ricsanfre.microservices -DartifactId=product-composite-service
+  mkdir submodule-name
   ```
+  
+- Add new module to parent pom.xml
+
+  ```xml
+  <modules>
+    <module>submodule-name</module>
+  </modules>  
+  ```
+- Create submodule pom.xml
+
+  ```xml
+  <?xml version="1.0" encoding="UTF-8"?>
+  <project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.ricsanfre.microservices</groupId>
+        <artifactId>microservices</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <artifactId>submodule-name</artifactId>
+    <groupId>com.ricsanfre.microservices.submodule</groupId>
+    <properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+  </project>  
+  ```
+
+NOTE: Alternatively, module can be created using IntelliJ
