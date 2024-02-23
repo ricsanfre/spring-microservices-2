@@ -18,6 +18,7 @@
     <module>recommendation-service</module>
     <module>product-composite-service</module>
     <module>api</module>
+    <module>util</module>
   </modules>
 
   <properties>
