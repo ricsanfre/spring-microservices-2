@@ -1,5 +1,7 @@
 package com.ricsanfre.microservices.util.http;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
@@ -8,6 +10,8 @@ import java.net.UnknownHostException;
 
 @Configuration
 public class ServiceUtil {
+
+    private static final Logger LOG = LoggerFactory.getLogger(ServiceUtil.class);
 
     // Port where the microservice is running on obtained from application.yaml
     @Value("${server.port}")
