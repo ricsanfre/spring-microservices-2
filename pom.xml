@@ -17,6 +17,7 @@
     <module>review-service</module>
     <module>recommendation-service</module>
     <module>product-composite-service</module>
+    <module>api</module>
   </modules>
 
   <properties>
@@ -55,9 +56,19 @@
       <artifactId>spring-boot-starter-actuator</artifactId>
     </dependency>
     <!-- Testing -->
+    <!-- Testing SpringBoot https://docs.spring.io/spring-boot/docs/current/reference/html/features.html#features.testing
+        JUnit 5
+    -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- The reactor test library helps to test reactive components Mono and Flux in an asynchronous manner -->
+    <dependency>
+      <groupId>io.projectreactor</groupId>
+      <artifactId>reactor-test</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>
