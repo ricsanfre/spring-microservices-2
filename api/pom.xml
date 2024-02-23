@@ -9,7 +9,7 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <groupId>com.ricsanfre.microservices.api</groupId>
+    <groupId>com.ricsanfre.microservices</groupId>
     <artifactId>api</artifactId>
     <packaging>jar</packaging>
 
