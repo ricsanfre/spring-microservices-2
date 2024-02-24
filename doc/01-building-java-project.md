@@ -1,5 +1,3 @@
-
-
 # Building Java Project
 
 ## Installing Java dev tools
@@ -91,6 +89,26 @@ Create Maven parent project: `microservices`, containing Spring-boot plugins and
     </dependencies>
   </dependencyManagement>  
   ```
+- Add Spring Cloud dependencies declaration
+
+  ```xml
+  <properties>
+      <spring-cloud.version>2023.2.0</spring-cloud.version>
+  </properties>
+  <dependencyManagement>
+      <dependencies>
+          <dependency>
+              <groupId>org.springframework.cloud</groupId>
+              <artifactId>spring-cloud-dependencies</artifactId>
+              <version>${spring-cloud.version}</version>
+              <type>pom</type>
+              <scope>import</scope>
+          </dependency>
+      </dependencies>
+  </dependencyManagement>
+  ```
+
+
 - Add common dependencies for all sub-modules under `dependencies`
 
   ```xml
