@@ -25,19 +25,30 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>17</maven.compiler.source>
     <maven.compiler.target>17</maven.compiler.target>
+    <spring-boot.version>3.2.0</spring-boot.version>
+    <spring-cloud.version>2023.0.0</spring-cloud.version>
   </properties>
 
   <!--
-    Dependencies declaration: Spring boot dependencies. Curated list
+    Dependencies declaration:
+      - Spring boot dependencies. Curated list
+      - Spring Cloud dependencies
   -->
   <dependencyManagement>
     <dependencies>
       <dependency>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-dependencies</artifactId>
-        <version>3.2.0</version>
+        <version>${spring-boot.version}</version>
         <scope>import</scope>
         <type>pom</type>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-dependencies</artifactId>
+        <version>${spring-cloud.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -47,10 +58,19 @@
   -->
   <dependencies>
     <!-- Webflux -->
+    <!--  Reactive Stack need Webflux instead of Spring MVC
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-webflux</artifactId>
     </dependency>
+    -->
+
+    <!-- Spring MVC -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+
     <!-- Actuator -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -67,11 +87,13 @@
     </dependency>
 
     <!-- The reactor test library helps to test reactive components Mono and Flux in an asynchronous manner -->
+    <!-- Only needed if Reactive Stack with WebFlux is used
     <dependency>
       <groupId>io.projectreactor</groupId>
       <artifactId>reactor-test</artifactId>
       <scope>test</scope>
     </dependency>
+    -->
   </dependencies>
 
   <build>
