@@ -1,0 +1,17 @@
+# Server Port
+server:
+  port: 8080
+
+# Logging configuration
+logging:
+  level:
+    root: INFO
+
+# Microservices URL
+app:
+  product:
+    url: http://localhost:8081
+  recommendation:
+    url: http://localhost:8082
+  review:
+    url: http://localhost:8083
