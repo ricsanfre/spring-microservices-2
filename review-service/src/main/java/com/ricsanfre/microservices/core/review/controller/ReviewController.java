@@ -1,4 +1,4 @@
-package com.ricsanfre.microservices.core.review.services;
+package com.ricsanfre.microservices.core.review.controller;
 
 import com.ricsanfre.microservices.api.core.review.Review;
 import com.ricsanfre.microservices.api.core.review.ReviewService;
@@ -10,13 +10,13 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.ArrayList;
 import java.util.List;
 @RestController
-public class ReviewServiceImpl implements ReviewService {
+public class ReviewController implements ReviewService {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ReviewServiceImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ReviewController.class);
 
     private final ServiceUtil serviceUtil;
 
-    public ReviewServiceImpl(ServiceUtil serviceUtil) {
+    public ReviewController(ServiceUtil serviceUtil) {
         this.serviceUtil = serviceUtil;
     }
 

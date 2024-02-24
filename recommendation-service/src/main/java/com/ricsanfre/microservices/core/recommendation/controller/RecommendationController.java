@@ -1,4 +1,4 @@
-package com.ricsanfre.microservices.core.recommendation.services;
+package com.ricsanfre.microservices.core.recommendation.controller;
 
 import com.ricsanfre.microservices.api.core.recommendation.Recommendation;
 import com.ricsanfre.microservices.api.core.recommendation.RecommendationService;
@@ -10,13 +10,13 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.ArrayList;
 import java.util.List;
 @RestController
-public class RecommendationServiceImpl implements RecommendationService {
+public class RecommendationController implements RecommendationService {
 
-    private static final Logger LOG = LoggerFactory.getLogger(RecommendationServiceImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(RecommendationController.class);
 
     private final ServiceUtil serviceUtil;
 
-    public RecommendationServiceImpl(ServiceUtil serviceUtil) {
+    public RecommendationController(ServiceUtil serviceUtil) {
         this.serviceUtil = serviceUtil;
     }
 

@@ -1,4 +1,4 @@
-package com.ricsanfre.microservices.core.product.services;
+package com.ricsanfre.microservices.core.product.controller;
 
 import com.ricsanfre.microservices.api.core.product.Product;
 import com.ricsanfre.microservices.api.core.product.ProductService;
@@ -8,12 +8,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class ProductServiceImpl implements ProductService {
+public class ProductController implements ProductService {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ProductServiceImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ProductController.class);
     private final ServiceUtil serviceUtil;
 
-    public ProductServiceImpl(ServiceUtil serviceUtil) {
+    public ProductController(ServiceUtil serviceUtil) {
         this.serviceUtil = serviceUtil;
     }
 
