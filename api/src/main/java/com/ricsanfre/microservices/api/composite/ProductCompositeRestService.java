@@ -13,6 +13,6 @@ public interface ProductCompositeRestService {
     @GetMapping(
             value = "/product-composite/{productId}",
             produces = "application/json")
-    ProductAggregate getProduct(@PathVariable("productId") int productId);
+    ProductAggregateDTO getProduct(@PathVariable("productId") int productId);
 
 }

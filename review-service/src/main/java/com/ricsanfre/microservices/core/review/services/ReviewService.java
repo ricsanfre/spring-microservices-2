@@ -1,6 +1,6 @@
 package com.ricsanfre.microservices.core.review.services;
 
-import com.ricsanfre.microservices.api.core.review.Review;
+import com.ricsanfre.microservices.api.core.review.ReviewDTO;
 import com.ricsanfre.microservices.util.http.ServiceUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +20,7 @@ public class ReviewService {
         this.serviceUtil = serviceUtil;
     }
 
-    public List<Review> getReviews(int productId) {
+    public List<ReviewDTO> getReviews(int productId) {
 
         if (productId < 1) {
             throw new IllegalArgumentException("Invalid productId: " + productId);
@@ -31,10 +31,10 @@ public class ReviewService {
             return new ArrayList<>();
         }
 
-        List<Review> list = new ArrayList<>();
-        list.add(new Review(productId, 1, "Author 1", "Subject 1", "Content 1", serviceUtil.getServiceAddress()));
-        list.add(new Review(productId, 2, "Author 2", "Subject 2", "Content 2", serviceUtil.getServiceAddress()));
-        list.add(new Review(productId, 3, "Author 3", "Subject 3", "Content 3", serviceUtil.getServiceAddress()));
+        List<ReviewDTO> list = new ArrayList<>();
+        list.add(new ReviewDTO(productId, 1, "Author 1", "Subject 1", "Content 1", serviceUtil.getServiceAddress()));
+        list.add(new ReviewDTO(productId, 2, "Author 2", "Subject 2", "Content 2", serviceUtil.getServiceAddress()));
+        list.add(new ReviewDTO(productId, 3, "Author 3", "Subject 3", "Content 3", serviceUtil.getServiceAddress()));
 
         LOG.debug("/reviews response size: {}", list.size());
 

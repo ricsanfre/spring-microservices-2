@@ -1,6 +1,6 @@
 package com.ricsanfre.microservices.core.product.services;
 
-import com.ricsanfre.microservices.api.core.product.Product;
+import com.ricsanfre.microservices.api.core.product.ProductDTO;
 import com.ricsanfre.microservices.api.exceptions.NotFoundException;
 import com.ricsanfre.microservices.util.http.ServiceUtil;
 import org.slf4j.Logger;
@@ -17,7 +17,7 @@ public class ProductService {
         this.serviceUtil = serviceUtil;
     }
 
-    public Product getProduct(int productId) {
+    public ProductDTO getProduct(int productId) {
 
         LOG.info("Getting details for productId={}", productId);
 
@@ -28,7 +28,7 @@ public class ProductService {
         if (productId == 13) {
             throw new NotFoundException("No product found for productId: " + productId);
         }
-        return new Product(productId, "name-" + productId, 123,
+        return new ProductDTO(productId, "name-" + productId, 123,
                 serviceUtil.getServiceAddress());
     }
 }

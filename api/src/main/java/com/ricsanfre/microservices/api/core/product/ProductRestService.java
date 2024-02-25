@@ -13,8 +13,7 @@ public interface ProductRestService {
      */
 
     @GetMapping(
-            value = "/product/{productId}",
-            produces = "application/json"
+            value = "/product/{productId}"
     )
-    Product getProduct(@PathVariable("productId") int productId);
+    ProductDTO getProduct(@PathVariable("productId") int productId);
 }

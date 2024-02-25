@@ -1,6 +1,6 @@
 package com.ricsanfre.microservices.composite.product.controller;
 
-import com.ricsanfre.microservices.api.composite.ProductAggregate;
+import com.ricsanfre.microservices.api.composite.ProductAggregateDTO;
 import com.ricsanfre.microservices.api.composite.ProductCompositeRestService;
 import com.ricsanfre.microservices.composite.product.services.ProductCompositeService;
 import org.slf4j.Logger;
@@ -20,7 +20,7 @@ public class ProductCompositeController implements ProductCompositeRestService {
 
 
     @Override
-    public ProductAggregate getProduct(int productId) {
+    public ProductAggregateDTO getProduct(int productId) {
         LOG.info("/product API request for productId={}", productId);
         return productCompositeService.getProductAggregate(productId);
     }

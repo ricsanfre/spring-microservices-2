@@ -1,14 +1,14 @@
 package com.ricsanfre.microservices.composite.product.services;
 
-import com.ricsanfre.microservices.api.composite.ProductAggregate;
+import com.ricsanfre.microservices.api.composite.ProductAggregateDTO;
 import com.ricsanfre.microservices.api.composite.RecommendationSummary;
 import com.ricsanfre.microservices.api.composite.ReviewSummary;
 import com.ricsanfre.microservices.api.composite.ServiceAddresses;
-import com.ricsanfre.microservices.api.core.product.Product;
+import com.ricsanfre.microservices.api.core.product.ProductDTO;
 import com.ricsanfre.microservices.api.core.product.ProductRestClient;
-import com.ricsanfre.microservices.api.core.recommendation.Recommendation;
+import com.ricsanfre.microservices.api.core.recommendation.RecommendationDTO;
 import com.ricsanfre.microservices.api.core.recommendation.RecommendationRestClient;
-import com.ricsanfre.microservices.api.core.review.Review;
+import com.ricsanfre.microservices.api.core.review.ReviewDTO;
 import com.ricsanfre.microservices.api.core.review.ReviewRestClient;
 import com.ricsanfre.microservices.util.http.ServiceUtil;
 import org.slf4j.Logger;
@@ -39,57 +39,57 @@ public class ProductCompositeService {
         this.recommendationClient = recommendationClient;
     }
 
-    public ProductAggregate getProductAggregate(int productId) {
+    public ProductAggregateDTO getProductAggregate(int productId) {
 
         LOG.info("");
-        Product product = getProduct(productId);
-        List<Recommendation> recommendations = getRecommendations(productId);
-        List<Review> reviews = getReviews(productId);
-        return createProductAggregate(product, recommendations, reviews, serviceUtil.getServiceAddress());
+        ProductDTO productDTO = getProduct(productId);
+        List<RecommendationDTO> recommendationDTOS = getRecommendations(productId);
+        List<ReviewDTO> reviewDTOS = getReviews(productId);
+        return createProductAggregate(productDTO, recommendationDTOS, reviewDTOS, serviceUtil.getServiceAddress());
     }
 
-    private ProductAggregate createProductAggregate(
-            Product product,
-            List<Recommendation> recommendations,
-            List<Review> reviews,
+    private ProductAggregateDTO createProductAggregate(
+            ProductDTO productDTO,
+            List<RecommendationDTO> recommendationDTOS,
+            List<ReviewDTO> reviewDTOS,
             String serviceAddress) {
 
         // 1. Setup product info
-        int productId = product.getProductId();
-        String name = product.getName();
-        int weight = product.getWeight();
+        int productId = productDTO.productId();
+        String name = productDTO.name();
+        int weight = productDTO.weight();
 
         // 2. Copy summary recommendation info, if available
         List<RecommendationSummary> recommendationSummaries =
-                (recommendations == null) ? null : recommendations.stream()
-                        .map(r -> new RecommendationSummary(r.getRecommendationId(), r.getAuthor(), r.getRate()))
+                (recommendationDTOS == null) ? null : recommendationDTOS.stream()
+                        .map(r -> new RecommendationSummary(r.recommendationId(), r.author(), r.rate()))
                         .collect(Collectors.toList());
 
         // 3. Copy summary review info, if available
         List<ReviewSummary> reviewSummaries =
-                (reviews == null) ? null : reviews.stream()
-                        .map(r -> new ReviewSummary(r.getReviewId(), r.getAuthor(), r.getSubject()))
+                (reviewDTOS == null) ? null : reviewDTOS.stream()
+                        .map(r -> new ReviewSummary(r.reviewId(), r.author(), r.subject()))
                         .collect(Collectors.toList());
 
         // 4. Create info regarding the involved microservices addresses
-        String productAddress = product.getServiceAddress();
-        String reviewAddress = (reviews != null && !reviews.isEmpty()) ? reviews.get(0).getServiceAddress() : "";
-        String recommendationAddress = (recommendations != null && !recommendations.isEmpty()) ? recommendations.get(0).getServiceAddress() : "";
+        String productAddress = productDTO.serviceAddress();
+        String reviewAddress = (reviewDTOS != null && !reviewDTOS.isEmpty()) ? reviewDTOS.get(0).serviceAddress() : "";
+        String recommendationAddress = (recommendationDTOS != null && !recommendationDTOS.isEmpty()) ? recommendationDTOS.get(0).serviceAddress() : "";
         ServiceAddresses serviceAddresses = new ServiceAddresses(serviceAddress, productAddress, reviewAddress, recommendationAddress);
 
-        return new ProductAggregate(productId, name, weight, recommendationSummaries, reviewSummaries, serviceAddresses);
+        return new ProductAggregateDTO(productId, name, weight, recommendationSummaries, reviewSummaries, serviceAddresses);
 
     }
 
-    private Product getProduct(int productId) {
+    private ProductDTO getProduct(int productId) {
         return productClient.getProduct(productId);
     }
 
-    private List<Recommendation> getRecommendations(int productId) {
+    private List<RecommendationDTO> getRecommendations(int productId) {
         return recommendationClient.getRecommendations(productId);
     }
 
-    private List<Review> getReviews(int productId) {
+    private List<ReviewDTO> getReviews(int productId) {
         return reviewClient.getReviews(productId);
     }
 }
