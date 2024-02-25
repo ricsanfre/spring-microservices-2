@@ -6,6 +6,6 @@ import org.springframework.cloud.openfeign.FeignClient;
         name = "product",
         url = "${app.product.url}"
 )
-public interface ProductClient extends ProductService{
+public interface ProductRestClient extends ProductRestService {
 
 }

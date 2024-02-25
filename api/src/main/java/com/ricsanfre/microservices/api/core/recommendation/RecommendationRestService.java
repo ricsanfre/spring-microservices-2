@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-public interface RecommendationService {
+public interface RecommendationRestService {
 
     /**
      * Sample usage: "curl $HOST:$PORT/recommendation?productId=1".

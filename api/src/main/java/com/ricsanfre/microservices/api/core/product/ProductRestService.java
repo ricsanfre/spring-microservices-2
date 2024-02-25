@@ -3,7 +3,7 @@ package com.ricsanfre.microservices.api.core.product;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-public interface ProductService {
+public interface ProductRestService {
 
     /**
      * Sample usage: "curl $HOST:$PORT/product/1".

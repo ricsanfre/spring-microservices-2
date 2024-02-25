@@ -6,5 +6,5 @@ import org.springframework.cloud.openfeign.FeignClient;
         name = "review",
         url = "${app.review.url}"
 )
-public interface ReviewClient extends ReviewService {
+public interface ReviewRestClient extends ReviewRestService {
 }

@@ -5,11 +5,11 @@ import com.ricsanfre.microservices.api.composite.RecommendationSummary;
 import com.ricsanfre.microservices.api.composite.ReviewSummary;
 import com.ricsanfre.microservices.api.composite.ServiceAddresses;
 import com.ricsanfre.microservices.api.core.product.Product;
-import com.ricsanfre.microservices.api.core.product.ProductClient;
+import com.ricsanfre.microservices.api.core.product.ProductRestClient;
 import com.ricsanfre.microservices.api.core.recommendation.Recommendation;
-import com.ricsanfre.microservices.api.core.recommendation.RecommendationClient;
+import com.ricsanfre.microservices.api.core.recommendation.RecommendationRestClient;
 import com.ricsanfre.microservices.api.core.review.Review;
-import com.ricsanfre.microservices.api.core.review.ReviewClient;
+import com.ricsanfre.microservices.api.core.review.ReviewRestClient;
 import com.ricsanfre.microservices.util.http.ServiceUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,20 +19,20 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class ProductAggregationService {
-    private static final Logger LOG = LoggerFactory.getLogger(ProductAggregationService.class);
+public class ProductCompositeService {
+    private static final Logger LOG = LoggerFactory.getLogger(ProductCompositeService.class);
 
-    private final ReviewClient reviewClient;
-    private final ProductClient productClient;
+    private final ReviewRestClient reviewClient;
+    private final ProductRestClient productClient;
 
     private final ServiceUtil serviceUtil;
-    private final RecommendationClient recommendationClient;
+    private final RecommendationRestClient recommendationClient;
 
-    public ProductAggregationService(
-            ReviewClient reviewClient,
-            ProductClient productClient,
+    public ProductCompositeService(
+            ReviewRestClient reviewClient,
+            ProductRestClient productClient,
             ServiceUtil serviceUtil,
-            RecommendationClient recommendationClient) {
+            RecommendationRestClient recommendationClient) {
         this.reviewClient = reviewClient;
         this.productClient = productClient;
         this.serviceUtil = serviceUtil;

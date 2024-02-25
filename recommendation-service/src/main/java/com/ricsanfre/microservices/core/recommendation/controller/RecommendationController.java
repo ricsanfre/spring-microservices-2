@@ -1,7 +1,7 @@
 package com.ricsanfre.microservices.core.recommendation.controller;
 
 import com.ricsanfre.microservices.api.core.recommendation.Recommendation;
-import com.ricsanfre.microservices.api.core.recommendation.RecommendationService;
+import com.ricsanfre.microservices.api.core.recommendation.RecommendationRestService;
 import com.ricsanfre.microservices.util.http.ServiceUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.ArrayList;
 import java.util.List;
 @RestController
-public class RecommendationController implements RecommendationService {
+public class RecommendationController implements RecommendationRestService {
 
     private static final Logger LOG = LoggerFactory.getLogger(RecommendationController.class);
 

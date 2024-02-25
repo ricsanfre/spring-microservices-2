@@ -6,5 +6,5 @@ import org.springframework.cloud.openfeign.FeignClient;
         name = "recommendation",
         url = "${app.recommendation.url}"
 )
-public interface RecommendationClient extends RecommendationService{
+public interface RecommendationRestClient extends RecommendationRestService {
 }
