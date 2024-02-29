@@ -146,7 +146,7 @@ SLF4J isn’t a logging implementation in itself but serves as a facade or an ab
 
 Spring boot uses Logbak as default logging when adding `spring-boot-starter-web` dependency (Springboot MVC)
 
-Default configuration outputs logs to console. This default configuration is useful in Kuberentes environments.
+Default configuration outputs logs to console. This default configuration is useful in Kubernetes environments.
 See [Springboot Logging Reference documentation](https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#features.logging)
 
 
@@ -262,3 +262,172 @@ Use [Spring Cloud OpenFeign](https://docs.spring.io/spring-cloud-openfeign/docs/
       product:
         url: http://localhost:8081
     ```
+    
+## Error Handling
+
+### Spring boot default implementation
+
+Spring Boot MVC provides an ErrorController implementation to handle errors in a sensible way.
+
+It serves a fallback error page for browsers (a.k.a. the Whitelabel Error Page) and a JSON response for RESTful, non-HTML requests:
+
+Every exception happening is converted into Internal Server Error HTTP response (code 500)
+```json
+{
+  "timestamp": "2019-01-17T16:12:45.977+0000",
+  "status": 500,
+  "error": "Internal Server Error",
+  "message": "Error processing the request!",
+  "path": "/my-endpoint-with-exceptions"
+}
+```
+
+Spring Boot allows to include details of the original exception in the response message:
+
+```yaml
+server:
+  error:
+    include-stacktrace: always # includes the stacktrace in both the HTML and the JSON default response
+    include-message: always # since version 2.3, Spring Boot hides the message field in the response to avoid leaking sensitive information
+```
+
+A class annotated with @ControllerAdvice can be defined to customize the JSON document to return for a particular controller and/or exception type
+
+### Adding GlobalExceptionHandler
+
+Create a class annotated with @ControllerAdvice to handle or Exceptions and generate a customizes JSON API response message
+
+
+- Create a customized API Response record
+
+  ```java
+  package com.ricsanfre.microservices.api.errors;
+  
+  import org.springframework.http.HttpStatus;
+  
+ 
+  public record ApiErrorResponse (
+    String timestamp,
+    String path,
+    HttpStatus httpStatus,
+    String message ) {
+
+  }  
+  ```
+
+- Create GlobalControllerExceptionHandler annotated with @ControllerAdvice
+  
+  ```java
+  package com.ricsanfre.microservices.util.http;
+  
+  import com.ricsanfre.microservices.api.errors.ApiErrorResponse;
+  import com.ricsanfre.microservices.api.errors.exceptions.NotFoundException;
+  import jakarta.servlet.http.HttpServletRequest;
+  import org.slf4j.Logger;
+  import org.slf4j.LoggerFactory;
+  import org.springframework.http.HttpStatus;
+  import org.springframework.http.ResponseEntity;
+  import org.springframework.web.bind.annotation.ControllerAdvice;
+  import org.springframework.web.bind.annotation.ExceptionHandler;
+  
+  import java.time.ZonedDateTime;
+  
+  @ControllerAdvice
+  public class GlobalControllerExceptionHandler {
+  
+      private static final Logger LOG = LoggerFactory.getLogger(GlobalControllerExceptionHandler.class);
+  
+      @ExceptionHandler(value = NotFoundException.class)
+      public ResponseEntity<Object> handleResourceNotFoundException(
+              NotFoundException e,
+              HttpServletRequest request) {
+          ApiErrorResponse apiErrorResponse = new ApiErrorResponse(
+                  ZonedDateTime.now().toOffsetDateTime().toString(),
+                  request.getRequestURI(),
+                  HttpStatus.NOT_FOUND,
+                  e.getMessage()
+  
+          );
+          return new ResponseEntity<>(apiErrorResponse, HttpStatus.NOT_FOUND);
+      }  
+  }
+  ```  
+
+### Handling OpenFeign Errors
+
+OpenFeign clients whenever a HTTP error code is received, it triggers a generic FeignException hiding the original error response
+
+```
+feign.FeignException$NotFound: [404] during [POST] to [http://localhost:8080/upload-error-1] [UploadClient#fileUploadError(MultipartFile)]: [{"timestamp":"2022-02-18T13:25:22.083+00:00","status":404,"error":"Not Found","path":"/upload-error-1"}]
+	at feign.FeignException.clientErrorStatus(FeignException.java:219) ~[feign-core-11.7.jar:na]
+	at feign.FeignException.errorStatus(FeignException.java:194) ~[feign-core-11.7.jar:na]
+
+```
+
+A custom decoder can be defined to get information from original Error response and trigger a custom Exception
+
+- Create CustomDecoder
+
+  ```java
+  package com.ricsanfre.microservices.api.errors;
+  
+  import com.fasterxml.jackson.databind.ObjectMapper;
+  import com.ricsanfre.microservices.api.errors.exceptions.NotFoundException;
+  import feign.Response;
+  import feign.codec.ErrorDecoder;
+  
+  import java.io.IOException;
+  import java.io.InputStream;
+  
+  public class RetrieveMessageErrorDecoder implements ErrorDecoder {
+  
+      private final ErrorDecoder errorDecoder = new Default();
+  
+      @Override
+      public Exception decode(String methodKey, Response response) {
+  
+          ApiErrorResponse message = null;
+          try (InputStream bodyIs = response.body().asInputStream()) {
+              ObjectMapper mapper = new ObjectMapper();
+              message = mapper.readValue(bodyIs, ApiErrorResponse.class);
+          } catch (IOException e) {
+              return new Exception(e.getMessage());
+          }
+          switch (response.status()) {
+              // NOT_FOUND
+              case 404:
+                  return new NotFoundException(message.message() != null ? message.message() : "Not found");
+              // BAD_REQUEST
+              case 400:
+                  return new IllegalArgumentException(message.message() != null ? message.message() : "Bad Request");
+              default:
+                  return errorDecoder.decode(methodKey, response);
+          }
+      }
+  }  
+  ```
+
+- Configure OpenFeign client to use custom decoder
+
+  ```java
+  package com.ricsanfre.microservices.api.core.product;
+  
+  import com.ricsanfre.microservices.api.errors.RetrieveMessageErrorDecoder;
+  import org.springframework.cloud.openfeign.FeignClient;
+  
+  @FeignClient(
+  name = "product",
+  url = "${app.product.url}",
+  configuration = {RetrieveMessageErrorDecoder.class}
+  )
+  public interface ProductRestClient extends ProductRestService {
+  
+  }  
+  ```
+
+### References
+
+- [Spring boot MVC error-handling](https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#web.servlet.spring-mvc.error-handling)
+- [Error Handling for REST with Spring](https://www.baeldung.com/exception-handling-for-rest-with-spring)
+- [Retrieve Original Message From Feign ErrorDecoder](https://www.baeldung.com/feign-retrieve-original-message)
+- [Propagating Exceptions With OpenFeign and Spring](https://www.baeldung.com/spring-openfeign-propagate-exception)

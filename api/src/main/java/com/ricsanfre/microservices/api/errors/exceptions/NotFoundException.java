@@ -1,4 +1,4 @@
-package com.ricsanfre.microservices.api.exceptions;
+package com.ricsanfre.microservices.api.errors.exceptions;
 
 public class NotFoundException extends RuntimeException {
     public NotFoundException(String message) {

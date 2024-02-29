@@ -1,7 +1,7 @@
 package com.ricsanfre.microservices.core.product.services;
 
 import com.ricsanfre.microservices.api.core.product.ProductDTO;
-import com.ricsanfre.microservices.api.exceptions.NotFoundException;
+import com.ricsanfre.microservices.api.errors.exceptions.NotFoundException;
 import com.ricsanfre.microservices.util.http.ServiceUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
