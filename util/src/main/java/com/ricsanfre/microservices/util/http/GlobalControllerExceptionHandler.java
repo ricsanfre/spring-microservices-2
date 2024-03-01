@@ -1,6 +1,7 @@
 package com.ricsanfre.microservices.util.http;
 
 import com.ricsanfre.microservices.api.errors.ApiErrorResponse;
+import com.ricsanfre.microservices.api.errors.exceptions.InvalidInputException;
 import com.ricsanfre.microservices.api.errors.exceptions.NotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
@@ -9,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.time.ZonedDateTime;
 
@@ -31,9 +33,9 @@ public class GlobalControllerExceptionHandler {
         return new ResponseEntity<>(apiErrorResponse, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(value = IllegalArgumentException.class)
-    public ResponseEntity<Object> handleIllegalArgumentException(
-            IllegalArgumentException e,
+    @ExceptionHandler(value = InvalidInputException.class)
+    public ResponseEntity<Object> handleInvalidInputException(
+            InvalidInputException e,
             HttpServletRequest request) {
         ApiErrorResponse apiErrorResponse = new ApiErrorResponse(
                 ZonedDateTime.now().toOffsetDateTime().toString(),
@@ -45,4 +47,17 @@ public class GlobalControllerExceptionHandler {
         return new ResponseEntity<>(apiErrorResponse, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(value = MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<Object> handleMethodArgumentTypeMismatch(
+            MethodArgumentTypeMismatchException e,
+            HttpServletRequest request) {
+        ApiErrorResponse apiErrorResponse = new ApiErrorResponse(
+                ZonedDateTime.now().toOffsetDateTime().toString(),
+                request.getRequestURI(),
+                HttpStatus.BAD_REQUEST,
+                e.getMessage()
+
+        );
+        return new ResponseEntity<>(apiErrorResponse, HttpStatus.BAD_REQUEST);
+    }
 }

@@ -1,6 +1,7 @@
 package com.ricsanfre.microservices.core.review.services;
 
 import com.ricsanfre.microservices.api.core.review.ReviewDTO;
+import com.ricsanfre.microservices.api.errors.exceptions.InvalidInputException;
 import com.ricsanfre.microservices.util.http.ServiceUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +24,7 @@ public class ReviewService {
     public List<ReviewDTO> getReviews(int productId) {
 
         if (productId < 1) {
-            throw new IllegalArgumentException("Invalid productId: " + productId);
+            throw new InvalidInputException("Invalid productId: " + productId);
         }
 
         if (productId == 213) {

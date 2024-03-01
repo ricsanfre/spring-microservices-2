@@ -1,6 +1,7 @@
 package com.ricsanfre.microservices.api.errors;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ricsanfre.microservices.api.errors.exceptions.InvalidInputException;
 import com.ricsanfre.microservices.api.errors.exceptions.NotFoundException;
 import feign.Response;
 import feign.codec.ErrorDecoder;
@@ -28,7 +29,7 @@ public class RetrieveMessageErrorDecoder implements ErrorDecoder {
                 return new NotFoundException(message.message() != null ? message.message() : "Not found");
             // BAD_REQUEST
             case 400:
-                return new IllegalArgumentException(message.message() != null ? message.message() : "Bad Request");
+                return new InvalidInputException(message.message() != null ? message.message() : "Bad Request");
             default:
                 return errorDecoder.decode(methodKey, response);
         }
