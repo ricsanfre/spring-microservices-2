@@ -7,9 +7,9 @@ public record ProductAggregateDTO(
         String name,
 
         int weight,
-        List<RecommendationSummary> recommendations,
-        List<ReviewSummary> reviews,
-        ServiceAddresses serviceAddresses
+        List<RecommendationSummaryDTO> recommendations,
+        List<ReviewSummaryDTO> reviews,
+        ServiceAddressesDTO serviceAddresses
 ) {
 
 }
