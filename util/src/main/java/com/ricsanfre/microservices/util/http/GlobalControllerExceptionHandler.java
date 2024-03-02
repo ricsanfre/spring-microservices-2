@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 
 import java.time.ZonedDateTime;
 
@@ -47,9 +48,12 @@ public class GlobalControllerExceptionHandler {
         return new ResponseEntity<>(apiErrorResponse, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(value = MethodArgumentTypeMismatchException.class)
+    @ExceptionHandler(
+            value = { MethodArgumentTypeMismatchException.class,
+                    MissingServletRequestParameterException.class}
+    )
     public ResponseEntity<Object> handleMethodArgumentTypeMismatch(
-            MethodArgumentTypeMismatchException e,
+            Exception e,
             HttpServletRequest request) {
         ApiErrorResponse apiErrorResponse = new ApiErrorResponse(
                 ZonedDateTime.now().toOffsetDateTime().toString(),
@@ -59,5 +63,19 @@ public class GlobalControllerExceptionHandler {
 
         );
         return new ResponseEntity<>(apiErrorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(value = Exception.class)
+    public final ResponseEntity<Object> handleException(
+            Exception e,
+            HttpServletRequest request) {
+        ApiErrorResponse apiErrorResponse = new ApiErrorResponse(
+                ZonedDateTime.now().toOffsetDateTime().toString(),
+                request.getRequestURI(),
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                e.getClass() + ": " + e.getMessage()
+
+        );
+        return new ResponseEntity<>(apiErrorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
