@@ -86,6 +86,16 @@
       <scope>test</scope>
     </dependency>
 
+    <!-- Webflux for integration testing
+     https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#features.testing.spring-boot-applications.with-running-server
+     Integration Test with running server requires web-flux
+ -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-webflux</artifactId>
+      <scope>test</scope>
+    </dependency>
+
     <!-- The reactor test library helps to test reactive components Mono and Flux in an asynchronous manner -->
     <!-- Only needed if Reactive Stack with WebFlux is used
     <dependency>

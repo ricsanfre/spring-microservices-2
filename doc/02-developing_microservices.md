@@ -431,3 +431,46 @@ A custom decoder can be defined to get information from original Error response 
 - [Error Handling for REST with Spring](https://www.baeldung.com/exception-handling-for-rest-with-spring)
 - [Retrieve Original Message From Feign ErrorDecoder](https://www.baeldung.com/feign-retrieve-original-message)
 - [Propagating Exceptions With OpenFeign and Spring](https://www.baeldung.com/spring-openfeign-propagate-exception)
+
+
+## Integration Testing
+
+Testing SpringBoot application with a running server requires web-flux.
+See documentation [Testing with running server](https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#features.testing.spring-boot-applications.with-running-server)
+
+- Add Webflux dependency to pom.xml, only test scope
+
+  ```xml
+  <!-- Webflux for integration testing
+     https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#features.testing.spring-boot-applications.with-running-server
+     Integration Test with running server requires web-flux
+  -->
+  <dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-webflux</artifactId>
+    <scope>test</scope>
+  </dependency>
+  ```
+
+- Create Java class containing integration tests
+
+  ```java
+  @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+  public class ProductServiceApplicationTests {
+  
+      @Autowired
+      private WebTestClient webTestClient; 
+  
+      @Test
+      void exampleTest() {
+          webClient
+            .get().uri("/")
+            .exchange()
+            .expectStatus().isOk()
+            .expectBody(String.class).isEqualTo("Hello World");
+      }
+  }
+  ```
+
+### References
+- [Spring-boot testing doc](https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#features.testing)
