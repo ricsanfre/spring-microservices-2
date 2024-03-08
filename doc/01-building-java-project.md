@@ -121,9 +121,26 @@ Create Maven parent project: `microservices`, containing Spring-boot plugins and
   </dependencies>
   ```
 
-- Add Spring boot maven plugin
+- Remove plugins from pluginManagement section
+- Add maven-compiler-plugin to pluginManagement section
   
-  Empty <build><pluginManagement> section and add only Spring-boot plugin.
+  ```xml
+  <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
+    <plugins>
+        <!-- Maven compiler -->
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <version>${maven-compiler-plugin.version}</version>
+        </plugin>
+    </plugins>
+  </pluginManagement>  
+  ```
+
+- Add Spring boot maven plugin to pluginManagement section
+
+  Configure repackage goal to be executed as part of mvn package.
+  https://docs.spring.io/spring-boot/docs/current/maven-plugin/reference/htmlsingle/#packaging
   
   NOTE:
     <pluginManagement> section only declares a plugin. To be used need to be specified in <build><plugins> section
@@ -139,6 +156,13 @@ Create Maven parent project: `microservices`, containing Spring-boot plugins and
         <plugin>
           <groupId>org.springframework.boot</groupId>
           <artifactId>spring-boot-maven-plugin</artifactId>
+          <executions>
+                <execution>
+                    <goals>
+                        <goal>repackage</goal>
+                    </goals>
+                </execution>
+          </executions>  
         </plugin>
       </plugins>
     </pluginManagement>

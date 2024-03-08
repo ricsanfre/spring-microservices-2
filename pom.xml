@@ -10,7 +10,6 @@
   <packaging>pom</packaging>
 
   <name>microservices</name>
-  <!-- FIXME change it to the project's website -->
   <url>http://www.example.com</url>
   <modules>
     <module>product-service</module>
@@ -25,6 +24,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>17</maven.compiler.source>
     <maven.compiler.target>17</maven.compiler.target>
+    <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
     <spring-boot.version>3.2.0</spring-boot.version>
     <spring-cloud.version>2023.0.0</spring-cloud.version>
   </properties>
@@ -109,10 +109,28 @@
   <build>
     <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
       <plugins>
-        <!-- Spring-boot Maven plugin -->
+        <!-- Maven compiler -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>${maven-compiler-plugin.version}</version>
+        </plugin>
+        <!-- Spring-boot Maven plugin
+             Repacking goal added to package target
+             To have all code, including dependencies, into a single jar
+             Executable jar file: with command java -jar executable.jar
+             https://docs.spring.io/spring-boot/docs/current/maven-plugin/reference/htmlsingle/#packaging
+        -->
         <plugin>
           <groupId>org.springframework.boot</groupId>
           <artifactId>spring-boot-maven-plugin</artifactId>
+          <executions>
+            <execution>
+              <goals>
+                <goal>repackage</goal>
+              </goals>
+            </execution>
+          </executions>
         </plugin>
       </plugins>
     </pluginManagement>
