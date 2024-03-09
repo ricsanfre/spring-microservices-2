@@ -187,7 +187,6 @@
             </activation>
             <properties>
                 <jib.from.platforms>linux/amd64</jib.from.platforms>
-                <jib.container.creationTime>USE_CURRENT_TIMESTAMP</jib.container.creationTime>
             </properties>
         </profile>
         <profile>
@@ -199,7 +198,6 @@
             </activation>
             <properties>
                 <jib.from.platforms>linux/arm64</jib.from.platforms>
-                <jib.container.creationTime>USE_CURRENT_TIMESTAMP</jib.container.creationTime>
             </properties>
         </profile>
     </profiles>
