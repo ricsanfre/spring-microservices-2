@@ -1,0 +1,62 @@
+services:
+  product:
+    container_name: product
+    image: ricsanfre/product-service
+    mem_limit: 512m
+    ports:
+      - "7081:8080"
+    environment:
+      - SERVER_PORT=8080
+    networks:
+      - spring
+      - db
+    # depends_on:
+      # - eureka-server
+
+  review:
+    container_name: review
+    image: ricsanfre/review-service
+    mem_limit: 512m
+    ports:
+      - "7082:8080"
+    environment:
+      - SERVER_PORT=8080
+    networks:
+      - spring
+      - db
+
+  recommendation:
+    container_name: recommendation
+    image: ricsanfre/recommendation-service
+    mem_limit: 512m
+    ports:
+      - "7083:8080"
+    environment:
+      - SERVER_PORT=8080
+    networks:
+      - spring
+      - db
+  product-composite:
+    container_name: product-composite
+    image: ricsanfre/product-composite-service
+    mem_limit: 512m
+    ports:
+      - "8080:8080"
+    environment:
+      - SERVER_PORT=8080
+      - APP_PRODUCT_URL=http://product:8080
+      - APP_REVIEW_URL=http://review:8080
+      - APP_RECOMMENDATION_URL=http://recommendation:8080
+    networks:
+      - spring
+      - db
+    depends_on:
+      - product
+      - recommendation
+      - review
+
+networks:
+  db:
+    driver: bridge
+  spring:
+    driver: bridge
