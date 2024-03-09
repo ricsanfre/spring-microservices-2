@@ -51,6 +51,7 @@ Create Maven parent project: `microservices`, containing Spring-boot plugins and
   ```xml
   <packaging>pom</packaging>
   ```
+#### Manage global dependencies
 
 - Add Spring boot framework dependencies declaration
   
@@ -95,6 +96,8 @@ Create Maven parent project: `microservices`, containing Spring-boot plugins and
   <properties>
       <spring-cloud.version>2023.2.0</spring-cloud.version>
   </properties>
+  ```
+  ```xml
   <dependencyManagement>
       <dependencies>
           <dependency>
@@ -110,44 +113,90 @@ Create Maven parent project: `microservices`, containing Spring-boot plugins and
 
 
 - Add common dependencies for all sub-modules under `dependencies`
+  
+  Example lombok library
 
   ```xml
   <dependencies>
     <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-test</artifactId>
-        <scope>test</scope>
+        <groupId>org.projectlombok</groupId>
+        <artifactId>lombok</artifactId>
     </dependency>
   </dependencies>
   ```
 
-- Remove plugins from pluginManagement section
-- Add maven-compiler-plugin to pluginManagement section
+#### Manage global build 
+
+Manage build global configuration within build.pluginManagement section.
+
+build.pluginManagement section only declares a default configuration for a plugin. To be used need to be specified in build.plugins section
+By adding the plugin in the pluginManagement section, it becomes available to this POM, and all inheriting child POMs.
+This means that any child POMs will inherit the plugin executions simply by referencing the plugin in their plugin section. All we need to do is add the relevant groupId and artifactId, without having to duplicate the configuration or manage the version.
+Default configuration can be defined in parent POM, in submodules's POM only it is needed to reference it.
+See details about [maven-plugin-management](https://www.baeldung.com/maven-plugin-management)
+
+- Remove plugins from build.pluginManagement section that has been created by create maven project command
+
+- Add maven-compiler-plugin to build.pluginManagement section
+
+  Specify source and target java versions and plugin version to be used through properties.
   
   ```xml
-  <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
-    <plugins>
-        <!-- Maven compiler -->
-        <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-compiler-plugin</artifactId>
-            <version>${maven-compiler-plugin.version}</version>
-        </plugin>
-    </plugins>
-  </pluginManagement>  
+  <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
+  </properties>
+  ```
+  ```xml
+  <build>
+    <pluginManagement>
+        <plugins>
+            <!-- Maven compiler -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven-compiler-plugin.version}</version>
+            </plugin>
+        </plugins>
+    </pluginManagement> 
+  </build> 
+  ```
+  
+- Add maven-sunfire-plugin to execute unit tests
+
+  ```xml
+  <properties>
+        <maven-sunfire-plugin.version>2.22.1</maven-sunfire-plugin.version>
+  </properties>
+  ```
+  ```xml
+  <build>
+    <pluginManagement>
+        <plugins>
+            <!-- Maven sunfire plugin (Unit Testing)  -->
+            <plugin>
+                 <artifactId>maven-surefire-plugin</artifactId>
+                 <version>${maven-sunfire-plugin.version}</version>
+            </plugin>
+        </plugins>
+    </pluginManagement> 
+  </build>   
   ```
 
-- Add Spring boot maven plugin to pluginManagement section
+- Add Spring boot maven plugin.
 
-  Configure repackage goal to be executed as part of mvn package.
+  The plugin can create executable archives (jar files and war files) that contain all of an application’s dependencies and can then be run with java -jar
+  plugin's `repackage` goal generates this executable jar file with the command:
+
+  ```shell
+  mvn spring-boot:repackage
+  ```
+
+  Configure plugin's `repackage` goal to be executed as part of mvn's `package` build lifecycle phase.
   https://docs.spring.io/spring-boot/docs/current/maven-plugin/reference/htmlsingle/#packaging
-  
-  NOTE:
-    <pluginManagement> section only declares a plugin. To be used need to be specified in <build><plugins> section
-    By adding the plugin in the pluginManagement section, it becomes available to this POM, and all inheriting child POMs.
-    This means that any child POMs will inherit the plugin executions simply by referencing the plugin in their plugin section. All we need to do is add the relevant groupId and artifactId, without having to duplicate the configuration or manage the version.
-    Default configuration can be defined in parent POM, in submodules's POM only it is needed to reference it.
-  See details about [maven-plugin-management](https://www.baeldung.com/maven-plugin-management)
+
 
   ```xml
   <build>
@@ -169,82 +218,143 @@ Create Maven parent project: `microservices`, containing Spring-boot plugins and
   </build> 
   ```
 
-#### Initial Parent POM
+- Add Jib maven plugin.
 
+  [Jib](https://github.com/GoogleContainerTools/jib) can be used to generate automatically docker images without generating any Dockerfile
+  Jib builds optimized Docker and OCI images for Java applications without a Docker daemon.
 
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
+  
+  It can be used to generate docker images locally in development environment where there is available a Docker daemon
+  ```shell
+  mvn jib:dockerBuild
+  ```
+  It can also be used to directly push the docker image to Docker Hub. In this case a Docker daemon is not needed
+  
+  ```shell
+  mvn jib:build
+  ```
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+  NOTE: Jib reads Docker Hub credentials from `$HOME/.docker/config.json` file which is created when executing `docker login` command
+  Manual login into docker hub is required before using Jib to push images to DockerHub.
 
-  <groupId>com.ricsanfre.microservices</groupId>
-  <artifactId>microservices</artifactId>
-  <version>1.0-SNAPSHOT</version>
-  <packaging>pom</packaging>
+  Jib plugin configuration:
+  
+  - Configure plugin to generate locally docker images using Docker daemon.
+  - Base image `eclipse-temurin:17-jre` supporting multi-architecture (amd64/arm64)
+  - docker image name and tag specified through properties in child pom, configuration
+  - jib build or dockerBuild specified by property application.jib.defaultGoal
+  - jib:build or jib:dockerBuild goals added to `package` maven lifecycle phase
 
-  <name>microservices</name>
-  <!-- FIXME change it to the project's website -->
-  <url>http://www.example.com</url>
+  ```xml
+      <properties>
+        <jib.version>3.4.1</jib.version>
 
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>17</maven.compiler.source>
-    <maven.compiler.target>17</maven.compiler.target>
-  </properties>
-
-  <!--
-    Spring boot dependencies. Curated list
-  -->
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-dependencies</artifactId>
-        <version>3.2.0</version>
-        <scope>import</scope>
-        <type>pom</type>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
-  <!--
-    Common dependencies for all sub modules
-  -->
-  <dependencies>
-    <!-- Webflux -->
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-webflux</artifactId>
-    </dependency>
-    <!-- Actuator -->
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-actuator</artifactId>
-    </dependency>
-    <!-- Testing -->
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-test</artifactId>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
-
+        <!-- Jib properties -->
+        <application.jib.defaultGoal>dockerBuild</application.jib.defaultGoal> <!-- dockerBuild for local only; build to push also -->
+        <application.docker.skip>false</application.docker.skip>
+        <application.docker.image>${application.docker.image.name}:${application.docker.image.tag}
+        </application.docker.image>
+        <!-- application.docker.image.name MUST be set by child modules that use jib-maven-plugin. -->
+        <application.docker.image.name>INVALID</application.docker.image.name>
+        <application.docker.image.tag>latest</application.docker.image.tag>
+    </properties>
+  ```
+  ```xml
   <build>
-    <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
-      <plugins>
-        <!-- Spring-boot Maven plugin -->
-        <plugin>
-          <groupId>org.springframework.boot</groupId>
-          <artifactId>spring-boot-maven-plugin</artifactId>
-        </plugin>
-      </plugins>
-    </pluginManagement>
-  </build>
-</project>
-```
+      <pluginManagement>
+          <plugins>
+              <plugin>
+                  <groupId>com.google.cloud.tools</groupId>
+                  <artifactId>jib-maven-plugin</artifactId>
+                  <version>${jib.version}</version>
+                  <configuration>
+                      <from>
+                          <!-- Make sure to use the hash of the manifest list (multi-arch) vs the hash of a particular manifest (single-arch) when updating
+                               See https://github.com/docker/roadmap/issues/262#issuecomment-1161515179 for an example on how to do this -->
+                          <image>
+                              eclipse-temurin:17-jre@sha256:c61c6a48364d05ea89504489aecddd8af8c32dba6df2257da4131fe244284f50
+                          </image>
+                      </from>
+                      <!--suppress MavenModelInspection -->
+                      <skip>${application.docker.skip}</skip>
+                      <to>
+                          <image>${application.docker.image}</image>
+                      </to>
+                  </configuration>
+                  <executions>
+                      <execution>
+                          <id>build-docker-image</id>
+                          <goals>
+                              <goal>${application.jib.defaultGoal}</goal>
+                          </goals>
+                          <!-- Must be in package phase before docker runs-->
+                          <phase>package</phase>
+                      </execution>
+                  </executions>
+              </plugin>
+          </plugins>
+      </pluginManagement>
+  </build> 
+  ```
 
+  Add profiles (`arch-amd64` and `arch-arm64`) automatically actived that detect the architecture where building is happening
+   - Configure jib to generate a docker image using the proper architecture
+   - Generate images with current time stamp
+  Configure a maven profile `cicd` to push the docker images directly to Docker Hub
+   - Docker images pushed to DockerHub supports multi-architecture (amd64/arm64)
+  ```xml
+  <profiles>
+    <profile>
+      <id>cicd</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <properties>
+        <!-- Build AND push the built image -->
+        <application.jib.defaultGoal>build</application.jib.defaultGoal>
+        <jib.container.creationTime>USE_CURRENT_TIMESTAMP</jib.container.creationTime>
+        <jib.from.platforms>linux/amd64,linux/arm64</jib.from.platforms>
+      </properties>
+    </profile>
+  
+    <profile>
+      <id>arch-amd64</id>
+      <activation>
+        <os>
+          <arch>x86_64</arch>
+        </os>
+      </activation>
+      <properties>
+        <jib.from.platforms>linux/amd64</jib.from.platforms>
+        <jib.container.creationTime>USE_CURRENT_TIMESTAMP</jib.container.creationTime>
+      </properties>
+    </profile>
+    <profile>
+      <id>arch-arm64</id>
+      <activation>
+        <os>
+          <arch>aarch64</arch>
+        </os>
+      </activation>
+      <properties>
+        <jib.from.platforms>linux/arm64</jib.from.platforms>
+        <jib.container.creationTime>USE_CURRENT_TIMESTAMP</jib.container.creationTime>
+      </properties>
+    </profile>
+  </profiles>
+  ```
+
+  To generate docker images locally (dev environment):
+
+  ```shell
+  mvn package
+  ```
+
+  To push docker images direcly to docker hub
+
+  ```shell
+  mvn package -Pcicd
+  ```
 
 # Create project submodules
 

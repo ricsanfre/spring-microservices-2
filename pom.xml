@@ -1,138 +1,206 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.ricsanfre.microservices</groupId>
-  <artifactId>microservices</artifactId>
-  <version>1.0-SNAPSHOT</version>
-  <packaging>pom</packaging>
+    <groupId>com.ricsanfre.microservices</groupId>
+    <artifactId>microservices</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
 
-  <name>microservices</name>
-  <url>http://www.example.com</url>
-  <modules>
-    <module>product-service</module>
-    <module>review-service</module>
-    <module>recommendation-service</module>
-    <module>product-composite-service</module>
-    <module>api</module>
-    <module>util</module>
-  </modules>
+    <name>microservices</name>
+    <url>http://www.example.com</url>
+    <modules>
+        <module>product-service</module>
+        <module>review-service</module>
+        <module>recommendation-service</module>
+        <module>product-composite-service</module>
+        <module>api</module>
+        <module>util</module>
+    </modules>
 
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>17</maven.compiler.source>
-    <maven.compiler.target>17</maven.compiler.target>
-    <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
-    <spring-boot.version>3.2.0</spring-boot.version>
-    <spring-cloud.version>2023.0.0</spring-cloud.version>
-  </properties>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
+        <maven-sunfire-plugin.version>2.22.1</maven-sunfire-plugin.version>
+        <spring-boot.version>3.2.0</spring-boot.version>
+        <spring.boot.maven.plugin.version>3.2.0</spring.boot.maven.plugin.version>
+        <spring-cloud.version>2023.0.0</spring-cloud.version>
+        <jib.version>3.4.1</jib.version>
 
-  <!--
-    Dependencies declaration:
-      - Spring boot dependencies. Curated list
-      - Spring Cloud dependencies
-  -->
-  <dependencyManagement>
+        <!-- Jib properties -->
+        <application.jib.defaultGoal>dockerBuild</application.jib.defaultGoal> <!-- dockerBuild for local only; build to push also -->
+        <application.docker.skip>false</application.docker.skip>
+        <application.docker.image>${application.docker.image.name}:${application.docker.image.tag}
+        </application.docker.image>
+        <!-- application.docker.image.name MUST be set by child modules that use jib-maven-plugin. -->
+        <application.docker.image.name>INVALID</application.docker.image.name>
+        <application.docker.image.tag>latest</application.docker.image.tag>
+
+
+    </properties>
+
+    <!--
+      Dependencies declaration:
+        - Spring boot dependencies. Curated list
+        - Spring Cloud dependencies
+    -->
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot.version}</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <!--
+      Common dependencies for all sub modules
+    -->
     <dependencies>
-      <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-dependencies</artifactId>
-        <version>${spring-boot.version}</version>
-        <scope>import</scope>
-        <type>pom</type>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework.cloud</groupId>
-        <artifactId>spring-cloud-dependencies</artifactId>
-        <version>${spring-cloud.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
-  <!--
-    Common dependencies for all sub modules
-  -->
-  <dependencies>
-    <!-- Webflux -->
-    <!--  Reactive Stack need Webflux instead of Spring MVC
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-webflux</artifactId>
-    </dependency>
-    -->
-
-    <!-- Spring MVC -->
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-web</artifactId>
-    </dependency>
-
-    <!-- Actuator -->
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-actuator</artifactId>
-    </dependency>
-    <!-- Testing -->
-    <!-- Testing SpringBoot https://docs.spring.io/spring-boot/docs/current/reference/html/features.html#features.testing
-        JUnit 5
-    -->
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-test</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <!-- Webflux for integration testing
-     https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#features.testing.spring-boot-applications.with-running-server
-     Integration Test with running server requires web-flux
- -->
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-webflux</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <!-- The reactor test library helps to test reactive components Mono and Flux in an asynchronous manner -->
-    <!-- Only needed if Reactive Stack with WebFlux is used
-    <dependency>
-      <groupId>io.projectreactor</groupId>
-      <artifactId>reactor-test</artifactId>
-      <scope>test</scope>
-    </dependency>
-    -->
-  </dependencies>
-
-  <build>
-    <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
-      <plugins>
-        <!-- Maven compiler -->
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-compiler-plugin</artifactId>
-          <version>${maven-compiler-plugin.version}</version>
-        </plugin>
-        <!-- Spring-boot Maven plugin
-             Repacking goal added to package target
-             To have all code, including dependencies, into a single jar
-             Executable jar file: with command java -jar executable.jar
-             https://docs.spring.io/spring-boot/docs/current/maven-plugin/reference/htmlsingle/#packaging
-        -->
-        <plugin>
+        <!-- Webflux -->
+        <!--  Reactive Stack need Webflux instead of Spring MVC
+        <dependency>
           <groupId>org.springframework.boot</groupId>
-          <artifactId>spring-boot-maven-plugin</artifactId>
-          <executions>
-            <execution>
-              <goals>
-                <goal>repackage</goal>
-              </goals>
-            </execution>
-          </executions>
-        </plugin>
-      </plugins>
-    </pluginManagement>
-  </build>
+          <artifactId>spring-boot-starter-webflux</artifactId>
+        </dependency>
+        -->
+
+        <!-- The reactor test library helps to test reactive components Mono and Flux in an asynchronous manner -->
+        <!-- Only needed if Reactive Stack with WebFlux is used
+        <dependency>
+          <groupId>io.projectreactor</groupId>
+          <artifactId>reactor-test</artifactId>
+          <scope>test</scope>
+        </dependency>
+        -->
+    </dependencies>
+
+    <build>
+        <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
+            <plugins>
+                <!-- Maven compiler plugins  -->
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>${maven-compiler-plugin.version}</version>
+                </plugin>
+                <!-- Maven sunfire plugin (Unit Testing)  -->
+                <plugin>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>${maven-sunfire-plugin.version}</version>
+                </plugin>
+
+                <!-- Spring-boot Maven plugin
+                     Repacking goal added to package target
+                     To have all code, including dependencies, into a single jar
+                     Executable jar file: with command java -jar executable.jar
+                     https://docs.spring.io/spring-boot/docs/current/maven-plugin/reference/htmlsingle/#packaging
+                -->
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <version>${spring.boot.maven.plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>repackage</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+
+                <!-- Jib maven plugin
+
+                             Jib
+                             https://github.com/GoogleContainerTools/jib
+
+                             Using eclipse-temurin OpenJDK images
+                             https://hub.docker.com/_/eclipse-temurin
+                        -->
+                <plugin>
+                    <groupId>com.google.cloud.tools</groupId>
+                    <artifactId>jib-maven-plugin</artifactId>
+                    <version>${jib.version}</version>
+                    <configuration>
+                        <from>
+                            <!-- Make sure to use the hash of the manifest list (multi-arch) vs the hash of a particular manifest (single-arch) when updating
+                                 See https://github.com/docker/roadmap/issues/262#issuecomment-1161515179 for an example on how to do this -->
+                            <image>
+                                eclipse-temurin:17-jre@sha256:c61c6a48364d05ea89504489aecddd8af8c32dba6df2257da4131fe244284f50
+                            </image>
+                        </from>
+                        <!--suppress MavenModelInspection -->
+                        <skip>${application.docker.skip}</skip>
+                        <to>
+                            <image>${application.docker.image}</image>
+                        </to>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>build-docker-image</id>
+                            <goals>
+                                <goal>${application.jib.defaultGoal}</goal>
+                            </goals>
+                            <!-- Must be in package phase before docker runs-->
+                            <phase>package</phase>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+    <profiles>
+        <profile>
+            <id>cicd</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <!-- Build AND push the built image -->
+                <application.jib.defaultGoal>build</application.jib.defaultGoal>
+                <jib.container.creationTime>USE_CURRENT_TIMESTAMP</jib.container.creationTime>
+                <jib.from.platforms>linux/amd64,linux/arm64</jib.from.platforms>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>arch-amd64</id>
+            <activation>
+                <os>
+                    <arch>x86_64</arch>
+                </os>
+            </activation>
+            <properties>
+                <jib.from.platforms>linux/amd64</jib.from.platforms>
+                <jib.container.creationTime>USE_CURRENT_TIMESTAMP</jib.container.creationTime>
+            </properties>
+        </profile>
+        <profile>
+            <id>arch-arm64</id>
+            <activation>
+                <os>
+                    <arch>aarch64</arch>
+                </os>
+            </activation>
+            <properties>
+                <jib.from.platforms>linux/arm64</jib.from.platforms>
+                <jib.container.creationTime>USE_CURRENT_TIMESTAMP</jib.container.creationTime>
+            </properties>
+        </profile>
+    </profiles>
 </project>
