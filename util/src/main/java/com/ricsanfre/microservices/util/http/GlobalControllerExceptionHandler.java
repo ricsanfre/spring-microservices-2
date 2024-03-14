@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 
@@ -20,6 +21,7 @@ public class GlobalControllerExceptionHandler {
 
     private static final Logger LOG = LoggerFactory.getLogger(GlobalControllerExceptionHandler.class);
 
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(value = NotFoundException.class)
     public ResponseEntity<Object> handleResourceNotFoundException(
             NotFoundException e,
@@ -34,6 +36,7 @@ public class GlobalControllerExceptionHandler {
         return new ResponseEntity<>(apiErrorResponse, HttpStatus.NOT_FOUND);
     }
 
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(value = InvalidInputException.class)
     public ResponseEntity<Object> handleInvalidInputException(
             InvalidInputException e,
@@ -48,6 +51,7 @@ public class GlobalControllerExceptionHandler {
         return new ResponseEntity<>(apiErrorResponse, HttpStatus.BAD_REQUEST);
     }
 
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(
             value = { MethodArgumentTypeMismatchException.class,
                     MissingServletRequestParameterException.class}

@@ -474,3 +474,44 @@ See documentation [Testing with running server](https://docs.spring.io/spring-bo
 
 ### References
 - [Spring-boot testing doc](https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#features.testing)
+
+## Open Api
+
+Use OpenAPI Specification to document APIs
+
+`springdoc-openapi` java library helps to automate the generation of API documentation using spring boot projects
+
+Adding the following dependency, swagger UI is added. 
+
+```xml
+<dependency>
+  <groupId>org.springdoc</groupId>
+  <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+  <version>2.3.0</version>
+</dependency>
+```
+
+Add the following to application.yaml for configuring the openapi docs
+
+```yaml
+# Open API
+springdoc:
+  # Make swagger and open api doc available under /openapi path
+  swagger-ui.path: /openapi/swagger-ui.html
+  api-docs.path: /openapi/v3/api-docs
+  # Reduce packages to scan looking for openapi annotations
+  packagesToScan: com.ricsanfre.microservices.composite.product
+  pathsToMatch: /**
+```
+
+Open API description files:
+ - JSON file is available at `/openapi/v3/api-docs`
+ - YAML file is available at `/openapi/v3/api-docs.yaml`
+
+Swagger UI available at `/openapi/swagger-ui.html`
+
+
+### References
+
+- [Open API 3.0 for Spring boot](https://springdoc.org/)
+- [Documenting a Spring REST API Using OpenAPI 3.0](https://www.baeldung.com/spring-rest-openapi-documentation)

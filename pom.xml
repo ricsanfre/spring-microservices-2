@@ -28,6 +28,7 @@
         <maven-sunfire-plugin.version>2.22.1</maven-sunfire-plugin.version>
         <spring-boot.version>3.2.0</spring-boot.version>
         <spring.boot.maven.plugin.version>3.2.0</spring.boot.maven.plugin.version>
+        <springdoc-openapi.version>2.3.0</springdoc-openapi.version>
         <spring-cloud.version>2023.0.0</spring-cloud.version>
         <jib.version>3.4.1</jib.version>
 
@@ -64,7 +65,22 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            <!-- Open API support: Automating generation of documentation
+            https://springdoc.org/
+            -->
+            <dependency>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+                <version>${springdoc-openapi.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-starter-common</artifactId>
+                <version>${springdoc-openapi.version}</version>
+            </dependency>
         </dependencies>
+
+
     </dependencyManagement>
 
     <!--
