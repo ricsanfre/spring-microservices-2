@@ -510,8 +510,231 @@ Open API description files:
 
 Swagger UI available at `/openapi/swagger-ui.html`
 
-
 ### References
 
 - [Open API 3.0 for Spring boot](https://springdoc.org/)
 - [Documenting a Spring REST API Using OpenAPI 3.0](https://www.baeldung.com/spring-rest-openapi-documentation)
+
+
+## Persistence Layer
+
+SQL and non-sql databases can be used to add a persistence layer to the microservices
+
+The following Spring/Java technologies will be used
+
+- Spring Data JPA (Java Persistence API) for microservices using SQL databases (i.e PosgreSQL).
+  See details in [Spring boot reference documentation: Data SQL databases](https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#data.sql)
+  
+- Other Spring Data Modules for using non SQL databases
+  See details in [Spring boot reference documentation: Non SQL databases](https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#data.nosql)
+  In case of MongoDB, Spring Data for MongoDB is used
+
+- Java beans Mapping library, [MapStruct](https://mapstruct.org/), to automate the mapping process between DAO (Data Access Objects), java beans used in pesistence layer, and DTO (Data Transfer Objects), java beans used in the interface/API
+
+- [TestContainers](https://java.testcontainers.org/) for automating integration testing
+  Testing DB with lightweight containers
+
+### PostgreSQL
+
+#### Adding dependencies
+- Adding Spring JPA
+  ```xml
+  <dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-data-jpa</artifactId>
+  </dependency>
+  ```
+- Adding PosgreSQL drivers
+  ```xml
+  <dependency>
+    <groupId>org.postgresql</groupId>
+    <artifactId>postgresql</artifactId>
+    <scope>runtime</scope>
+  </dependency>  
+  ```
+
+#### Adding PosgreSQL dev environment
+
+Using docker compose. Add following service:
+
+```yaml
+services:
+  postgres:
+    container_name: postgres
+    image: postgres
+    environment:
+      POSTGRES_USER: review
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: review
+      PGDATA: /data/postgres
+    volumes:
+      - postgres:/data/postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - db
+    restart: unless-stopped
+networks:
+  db:
+    driver: bridge
+volumes:
+  postgres: 
+```
+  
+#### Configuring Data Source
+
+Add PosgreSQL data source to `application.yaml`
+```yaml
+spring:
+  # PostgreSQL  backend
+  datasource:
+    password: password
+    url: jdbc:postgresql://localhost:5432/review
+    username: review
+  # JPA configuration
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+    show-sql: true
+```
+
+#### Start data base and configure it
+
+1. Start posgreSQL docker service using docker compose
+
+   ```shell
+   docker compose up -d posgres
+   ```
+
+2. Connect to PosgreSQl docker image to initialize DB
+
+   ```shell
+   docker exec -it postgres bash
+   ```
+
+3. Initialize postgreSQL database using interactive PosgreSQL cli
+
+   ```shell
+   psql -U review
+   
+   CREATE DATABASE review;
+   ```
+
+Other postgreSQL commands
+
+   Connect to specific database
+   ```shell
+   psql -U review -d database
+   ```
+
+   psql commands:
+   ```
+   \l : list all databases
+   \q : exit
+   \d : describe
+   \c : conect to a database
+   \dt : list relations
+   ```
+
+
+### MongoDB
+
+- Adding Spring Data for MongoDB
+
+  ```xml
+  <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-data-mongodb</artifactId>
+  </dependency>  
+  ```
+
+### MapStruct
+
+- Add dependencies
+
+  ```xml
+  <properties>
+    <org.mapstruct.version>1.5.5.Final</org.mapstruct.version>
+  </properties>
+  <dependencies>
+      <dependency>
+        <groupId>org.mapstruct</groupId>
+        <artifactId>mapstruct</artifactId>
+        <version>${org.mapstruct.version}</version>
+      </dependency>
+  </dependencies>
+  ```
+  
+- Configure maven compiler to add mapstruct annotations
+
+  ```xml
+  <build>
+      <plugins>
+          <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-compiler-plugin</artifactId>
+              <version>3.8.1</version>
+              <configuration>
+                  <source>1.8</source> <!-- depending on your project -->
+                  <target>1.8</target> <!-- depending on your project -->
+                  <annotationProcessorPaths>
+                      <path>
+                          <groupId>org.mapstruct</groupId>
+                          <artifactId>mapstruct-processor</artifactId>
+                          <version>${org.mapstruct.version}</version>
+                      </path>
+                      <!-- other annotation processors -->
+                  </annotationProcessorPaths>
+              </configuration>
+          </plugin>
+      </plugins>
+  </build>  
+  ```
+
+See further details in [MapStruct installation instructions](https://mapstruct.org/documentation/installation/)
+
+### TestContainers
+
+See installation details in [Testcontainers - JUnit5](https://java.testcontainers.org/quickstart/junit_5_quickstart/)
+
+- Add dependencies to pom.xml
+
+  ```xml
+  <properties>
+    <testcontainers.version>1.19.7</testcontainers.version>
+  </properties>
+  <dependencies>
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>testcontainers</artifactId>
+      <version>${testcontainers.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+        <groupId>org.testcontainers</groupId>
+        <artifactId>junit-jupiter</artifactId>
+        <version>${testcontainers.version}</version>
+        <scope>test</scope>
+    </dependency>
+    <dependency>
+        <groupId>org.testcontainers</groupId>
+        <artifactId>postgresql</artifactId>
+        <version>${testcontainers.version}</version>
+    </dependency>
+    <dependency>
+        <groupId>org.testcontainers</groupId>
+        <artifactId>mongodb</artifactId>
+        <version>${testcontainers.version}</version>
+    </dependency>
+  </dependencies>  
+  ```
+### References
+
+- [Spring boot Data: Reference doc](https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#data)
+- [Spring data for MongoDB](https://spring.io/projects/spring-data-mongodb)
+- [Spring data for JPA](https://spring.io/projects/spring-data-jpa)
+- [MapStruct](https://mapstruct.org/)

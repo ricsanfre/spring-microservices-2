@@ -41,7 +41,11 @@
         <application.docker.image.name>INVALID</application.docker.image.name>
         <application.docker.image.tag>latest</application.docker.image.tag>
 
+        <!-- MapStruct properties -->
+        <org.mapstruct.version>1.5.5.Final</org.mapstruct.version>
 
+        <!-- TestContainers -->
+        <testcontainers.version>1.19.7</testcontainers.version>
     </properties>
 
     <!--
@@ -78,6 +82,34 @@
                 <artifactId>springdoc-openapi-starter-common</artifactId>
                 <version>${springdoc-openapi.version}</version>
             </dependency>
+            <!-- Map Struct dependency -->
+            <dependency>
+                <groupId>org.mapstruct</groupId>
+                <artifactId>mapstruct</artifactId>
+                <version>${org.mapstruct.version}</version>
+            </dependency>
+            <!-- Testcontainers dependency -->
+            <dependency>
+                <groupId>org.testcontainers</groupId>
+                <artifactId>testcontainers</artifactId>
+                <version>${testcontainers.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.testcontainers</groupId>
+                <artifactId>junit-jupiter</artifactId>
+                <version>${testcontainers.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.testcontainers</groupId>
+                <artifactId>postgresql</artifactId>
+                <version>${testcontainers.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.testcontainers</groupId>
+                <artifactId>mongodb</artifactId>
+                <version>${testcontainers.version}</version>
+            </dependency>
+
         </dependencies>
 
 
@@ -106,7 +138,7 @@
     </dependencies>
 
     <build>
-        <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
+        <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (might be moved to parent pom) -->
             <plugins>
                 <!-- Maven compiler plugins  -->
 
@@ -114,6 +146,19 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>${maven-compiler-plugin.version}</version>
+                    <configuration>
+                        <source>${maven.compiler.source}</source>
+                        <target>${maven.compiler.target}</target>
+                        <!-- annotation processors -->
+                        <annotationProcessorPaths>
+                            <path>
+                                <groupId>org.mapstruct</groupId>
+                                <artifactId>mapstruct-processor</artifactId>
+                                <version>${org.mapstruct.version}</version>
+                            </path>
+                            <!-- other annotation processors -->
+                        </annotationProcessorPaths>
+                    </configuration>
                 </plugin>
                 <!-- Maven sunfire plugin (Unit Testing)  -->
                 <plugin>
