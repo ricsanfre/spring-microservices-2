@@ -1,4 +1,20 @@
 services:
+  postgres:
+    container_name: postgres
+    image: postgres:16.2
+    environment:
+      POSTGRES_USER: review
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: review
+      PGDATA: /data/postgres
+    volumes:
+      - postgres:/data/postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - db
+    restart: unless-stopped
+
   product:
     container_name: product
     image: ricsanfre/product-service
@@ -24,6 +40,8 @@ services:
     networks:
       - spring
       - db
+    depends_on:
+      - postgres
 
   recommendation:
     container_name: recommendation
@@ -60,3 +78,6 @@ networks:
     driver: bridge
   spring:
     driver: bridge
+
+volumes:
+  postgres:

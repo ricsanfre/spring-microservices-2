@@ -6,3 +6,19 @@ server:
 logging:
   level:
     root: INFO
+
+spring:
+  # PostgreSQL  backend
+  datasource:
+    password: password
+    url: jdbc:postgresql://localhost:5432/review
+    username: review
+  # JPA configuration
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+    show-sql: true
