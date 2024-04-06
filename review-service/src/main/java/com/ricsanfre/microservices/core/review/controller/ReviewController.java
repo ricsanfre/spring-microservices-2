@@ -21,10 +21,22 @@ public class ReviewController implements ReviewRestService {
     }
 
     @Override
+    public ReviewDTO createReview(ReviewDTO body) {
+        LOG.info("Create /review API invoked");
+        return reviewService.createReview(body);
+    }
+
+    @Override
     public List<ReviewDTO> getReviews(int productId) {
 
-        LOG.info("/review API invoked for productId={}", productId);
-
+        LOG.info("Get /review API invoked for productId={}", productId);
         return reviewService.getReviews(productId);
+    }
+
+    @Override
+    public void deleteReviews(int productId) {
+
+        LOG.info("Delete /review API invoked for productId={}", productId);
+        reviewService.deleteReviews(productId);
     }
 }
