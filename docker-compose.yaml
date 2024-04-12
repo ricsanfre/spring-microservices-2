@@ -15,6 +15,20 @@ services:
       - db
     restart: unless-stopped
 
+  mongodb:
+    container_name: mongo
+    image: mongo:7.0.8
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ricsanfre
+      MONGO_INITDB_ROOT_PASSWORD: password
+    volumes:
+      - mongo:/data
+    ports:
+      - "27017:27017"
+    networks:
+      - db
+    restart: unless-stopped
+
   product:
     container_name: product
     image: ricsanfre/product-service
@@ -81,3 +95,4 @@ networks:
 
 volumes:
   postgres:
+  mongo:

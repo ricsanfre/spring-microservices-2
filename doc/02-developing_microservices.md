@@ -652,6 +652,144 @@ Other postgreSQL commands
   </dependency>  
   ```
 
+#### Adding MongoDB dev environment
+
+Using docker compose. Add following service:
+
+```yaml
+services:
+  mongodb:
+    container_name: mongo
+    image: mongo:7.0.8
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ricsanfre
+      MONGO_INITDB_ROOT_PASSWORD: password
+    volumes:
+      - mongo:/data
+    ports:
+      - "27017:27017"
+    networks:
+      - db
+    restart: unless-stopped
+networks:
+  db:
+    driver: bridge
+volumes:
+  mongo:
+```
+
+#### Configuring Data Source
+
+Add Mongo data source to `application.yaml`
+```yaml
+spring:
+  data:
+    mongodb:
+      username: ricsanfre
+      password: password
+      host: localhost
+      port: 27017
+      database: database_name
+      authentication-database: admin
+```
+
+#### About automatic creation of MongoDB Indexes
+
+Spring Data MongoDB can automatically create indexes for entity types annotated with @Document. Index creation must be explicitly enabled since version 3.0.
+
+Indexes can be created programmatically on startup.
+
+Following class define a listener that execute the creation of all indexes on startup.
+
+```java
+package com.ricsanfre.microservices.core.product.db.index;
+
+import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.context.event.EventListener;
+import org.springframework.data.mapping.context.MappingContext;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.index.IndexOperations;
+import org.springframework.data.mongodb.core.index.IndexResolver;
+import org.springframework.data.mongodb.core.index.MongoPersistentEntityIndexResolver;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.MongoPersistentEntity;
+import org.springframework.data.mongodb.core.mapping.MongoPersistentProperty;
+import org.springframework.stereotype.Component;
+
+@Component
+public class IndexManager {
+
+  private final MongoTemplate mongoTemplate;
+
+  public IndexManager(MongoTemplate mongoTemplate) {
+    this.mongoTemplate = mongoTemplate;
+  }
+
+  // Create MongoDB indices on startup
+  // https://docs.spring.io/spring-data/mongodb/reference/mongodb/mapping/mapping-index-management.html
+  @EventListener(ContextRefreshedEvent.class)
+  public void initIndicesAfterStartup() {
+
+    MappingContext<? extends MongoPersistentEntity<?>, MongoPersistentProperty> mappingContext = mongoTemplate
+            .getConverter().getMappingContext();
+
+    IndexResolver resolver = new MongoPersistentEntityIndexResolver(mappingContext);
+    // consider only entities that are annotated with @Document
+    mappingContext.getPersistentEntities()
+            .stream()
+            .filter(it -> it.isAnnotationPresent(Document.class))
+            .forEach(it -> {
+
+              IndexOperations indexOps = mongoTemplate.indexOps(it.getType());
+              resolver.resolveIndexFor(it.getType()).forEach(indexOps::ensureIndex);
+            });
+  }
+}
+```
+
+See details in [Spring-MongoDB Reference document](https://docs.spring.io/spring-data/mongodb/reference/mongodb/mapping/mapping-index-management.html)
+
+
+
+#### Start data base and configure it
+
+1. Start mongodb docker service using docker compose
+
+   ```shell
+   docker compose up -d mongodb
+   ```
+
+2. Connect to MongoDB docker image to initialize DB using mongoshell
+
+   ```shell
+   docker exec -it mongo mongosh -u ricsanfre
+   ```
+
+3. Initialize mongodb database using mongoshell
+
+   ```shell
+   use 
+   ```
+
+Other mongoshell commands
+
+- List databases
+  ```shell
+  show dbs
+  ```
+- Start working with a specific database
+  ```shell
+  use products;
+  ```
+- Show collections
+  ```shell
+  show collections
+  ```
+- Show indices
+  ```shell
+  db.<collection>.getIndexes()
+  ```
+
 ### MapStruct
 
 - Add dependencies

@@ -38,11 +38,6 @@ public class ReviewService {
             throw new InvalidInputException("Invalid productId: " + productId);
         }
 
-        if (productId == 213) {
-            LOG.debug("No reviews found for productId: {}", productId);
-            return new ArrayList<>();
-        }
-
         List<Review> reviews = reviewRepository.findByProductId(productId);
 
         List<ReviewDTO> list = reviewMapper.daoListToDtoList(reviews);
