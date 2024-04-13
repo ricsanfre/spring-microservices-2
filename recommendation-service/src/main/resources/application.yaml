@@ -6,3 +6,14 @@ server:
 logging:
   level:
     root: INFO
+
+spring:
+  # MongoDB
+  data:
+    mongodb:
+      username: ricsanfre
+      password: password
+      host: localhost
+      port: 27017
+      database: recommendation
+      authentication-database: admin

@@ -21,8 +21,21 @@ public class RecommendationController implements RecommendationRestService {
     }
 
     @Override
+    public RecommendationDTO createRecommendation(RecommendationDTO body) {
+        LOG.info("/recommendation API create request recommendationId={}, for productId={}", body.recommendationId(), body.productId());
+        return recommendationService.createRecommendation(body);
+    }
+
+    @Override
     public List<RecommendationDTO> getRecommendations(int productId) {
         return recommendationService.getRecommendations(productId);
+
+    }
+
+    @Override
+    public void deleteRecommendations(int productId) {
+        LOG.info("/recommendation API delete request for productId={}", productId);
+        recommendationService.deleteRecommendations(productId);
 
     }
 }
