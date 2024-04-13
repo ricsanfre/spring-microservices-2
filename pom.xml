@@ -119,6 +119,13 @@
       Common dependencies for all sub modules
     -->
     <dependencies>
+        <!--Lombok https://projectlombok.org/
+            Annotations to generate boilerplate code
+         -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
         <!-- Webflux -->
         <!--  Reactive Stack need Webflux instead of Spring MVC
         <dependency>
@@ -183,6 +190,14 @@
                             </goals>
                         </execution>
                     </executions>
+                    <configuration>
+                        <excludes>
+                            <exclude>
+                                <groupId>org.projectlombok</groupId>
+                                <artifactId>lombok</artifactId>
+                            </exclude>
+                        </excludes>
+                    </configuration>
                 </plugin>
 
                 <!-- Jib maven plugin
