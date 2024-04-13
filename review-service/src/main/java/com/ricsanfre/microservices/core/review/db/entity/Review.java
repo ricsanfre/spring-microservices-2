@@ -1,9 +1,10 @@
 package com.ricsanfre.microservices.core.review.db.entity;
 
 import jakarta.persistence.*;
-
-import java.util.Objects;
-
+import lombok.Data;
+import lombok.NoArgsConstructor;
+@Data
+@NoArgsConstructor
 @Entity
 @Table(
         name = "review",
@@ -48,88 +49,4 @@ public class Review {
         this.content = content;
     }
 
-    public Review() {
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public int getVersion() {
-        return version;
-    }
-
-    public void setVersion(int version) {
-        this.version = version;
-    }
-
-    public int getProductId() {
-        return productId;
-    }
-
-    public void setProductId(int productId) {
-        this.productId = productId;
-    }
-
-    public int getReviewId() {
-        return reviewId;
-    }
-
-    public void setReviewId(int reviewId) {
-        this.reviewId = reviewId;
-    }
-
-    public String getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(String author) {
-        this.author = author;
-    }
-
-    public String getSubject() {
-        return subject;
-    }
-
-    public void setSubject(String subject) {
-        this.subject = subject;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Review review = (Review) o;
-        return id == review.id && version == review.version && productId == review.productId && reviewId == review.reviewId && Objects.equals(author, review.author) && Objects.equals(subject, review.subject) && Objects.equals(content, review.content);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, version, productId, reviewId, author, subject, content);
-    }
-
-    @Override
-    public String toString() {
-        return "Review{" +
-                "id=" + id +
-                ", version=" + version +
-                ", productId=" + productId +
-                ", reviewId=" + reviewId +
-                ", author='" + author + '\'' +
-                ", subject='" + subject + '\'' +
-                ", content='" + content + '\'' +
-                '}';
-    }
 }
