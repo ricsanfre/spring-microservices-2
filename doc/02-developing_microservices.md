@@ -839,6 +839,9 @@ See further details in [MapStruct installation instructions](https://mapstruct.o
 
 See installation details in [Testcontainers - JUnit5](https://java.testcontainers.org/quickstart/junit_5_quickstart/)
 
+Also the new [testcontainers built-in support from Spring-boot 3.1](https://docs.spring.io/spring-boot/reference/features/testcontainers.html) need to be added
+
+
 - Add dependencies to pom.xml
 
   ```xml
@@ -846,6 +849,10 @@ See installation details in [Testcontainers - JUnit5](https://java.testcontainer
     <testcontainers.version>1.19.7</testcontainers.version>
   </properties>
   <dependencies>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-testcontainers</artifactId>
+    </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>testcontainers</artifactId>
@@ -876,3 +883,4 @@ See installation details in [Testcontainers - JUnit5](https://java.testcontainer
 - [Spring data for MongoDB](https://spring.io/projects/spring-data-mongodb)
 - [Spring data for JPA](https://spring.io/projects/spring-data-jpa)
 - [MapStruct](https://mapstruct.org/)
+- [Spring-boot 3.1 built-in testcontainers support](https://www.baeldung.com/spring-boot-built-in-testcontainers)

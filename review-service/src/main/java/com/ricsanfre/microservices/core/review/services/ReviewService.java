@@ -5,13 +5,11 @@ import com.ricsanfre.microservices.api.errors.exceptions.InvalidInputException;
 import com.ricsanfre.microservices.core.review.db.entity.Review;
 import com.ricsanfre.microservices.core.review.db.repository.ReviewRepository;
 import com.ricsanfre.microservices.core.review.mapper.ReviewMapper;
-import com.ricsanfre.microservices.util.http.ServiceUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -19,15 +17,12 @@ public class ReviewService {
 
     private static final Logger LOG = LoggerFactory.getLogger(ReviewService.class);
 
-    private final ServiceUtil serviceUtil;
     private final ReviewRepository reviewRepository;
     private final ReviewMapper reviewMapper;
 
     public ReviewService(
-            ServiceUtil serviceUtil,
             ReviewRepository reviewRepository,
             ReviewMapper reviewMapper) {
-        this.serviceUtil = serviceUtil;
         this.reviewRepository = reviewRepository;
         this.reviewMapper = reviewMapper;
     }
