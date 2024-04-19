@@ -1,9 +1,16 @@
 package com.ricsanfre.microservices.core.review.db.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
-@Data
+import lombok.Setter;
+
+/**
+ * DO NOT use @Data or @toString with JPA
+ * https://medium.com/@miguelangelperezdiaz444/the-hidden-dangers-of-lombok-annotations-in-your-java-code-what-you-need-to-know-8acdce2d6b89
+ */
+@Getter
+@Setter
 @NoArgsConstructor
 @Entity
 @Table(
