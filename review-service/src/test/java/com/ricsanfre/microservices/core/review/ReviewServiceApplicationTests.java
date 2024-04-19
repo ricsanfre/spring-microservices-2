@@ -1,6 +1,5 @@
 package com.ricsanfre.microservices.core.review;
 
-import com.ricsanfre.microservices.api.core.product.ProductDTO;
 import com.ricsanfre.microservices.api.core.review.ReviewDTO;
 import com.ricsanfre.microservices.api.errors.ApiErrorResponse;
 import com.ricsanfre.microservices.core.review.db.repository.ReviewRepository;
