@@ -1,19 +1,15 @@
 package com.ricsanfre.microservices.core.product.services;
 
 import com.ricsanfre.microservices.api.core.product.ProductDTO;
-import com.ricsanfre.microservices.api.core.review.ReviewDTO;
 import com.ricsanfre.microservices.api.errors.exceptions.InvalidInputException;
 import com.ricsanfre.microservices.api.errors.exceptions.NotFoundException;
 import com.ricsanfre.microservices.core.product.db.entity.Product;
 import com.ricsanfre.microservices.core.product.db.repository.ProductRepository;
 import com.ricsanfre.microservices.core.product.mapper.ProductMapper;
-import com.ricsanfre.microservices.util.http.ServiceUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class ProductService {
@@ -21,15 +17,12 @@ public class ProductService {
     private static final Logger LOG = LoggerFactory.getLogger(ProductService.class);
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
-    private final ServiceUtil serviceUtil;
 
     public ProductService(
             ProductRepository productRepository,
-            ProductMapper productMapper,
-            ServiceUtil serviceUtil) {
+            ProductMapper productMapper) {
         this.productRepository = productRepository;
         this.productMapper = productMapper;
-        this.serviceUtil = serviceUtil;
     }
 
     public ProductDTO getProduct(int productId) {
