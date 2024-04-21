@@ -1,6 +1,5 @@
 package com.ricsanfre.microservices.core.recommendation.db.entity;
 
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
