@@ -54,9 +54,9 @@ public class ProductServiceApplicationTests extends MongoBaseTest {
                 .returnResult()
                 .getResponseBody();
 
-        assertThat(productCreated.productId()).isEqualTo(productId);
-        assertThat(productCreated.name()).isEqualTo("productName");
-        assertThat(productCreated.weight()).isEqualTo(productId);
+        assertThat(productCreated.getProductId()).isEqualTo(productId);
+        assertThat(productCreated.getName()).isEqualTo("productName");
+        assertThat(productCreated.getWeight()).isEqualTo(productId);
 
         // Check repository has 1 entries
         assertThat(productRepository.findByProductId(productId)).isNotEmpty();
@@ -73,7 +73,7 @@ public class ProductServiceApplicationTests extends MongoBaseTest {
                 .returnResult()
                 .getResponseBody();
 
-        assertThat(actual.productId())
+        assertThat(actual.getProductId())
                 .isEqualTo(productId);
     }
 
@@ -94,10 +94,10 @@ public class ProductServiceApplicationTests extends MongoBaseTest {
                 .returnResult()
                 .getResponseBody();
 
-        assertThat(responseBody.path())
+        assertThat(responseBody.getPath())
                 .isEqualTo(productURI + "/" + productId);
 
-        assertThat(responseBody.message())
+        assertThat(responseBody.getMessage())
                 .isEqualTo("No product found for productId: " + productId);
     }
 
@@ -118,10 +118,10 @@ public class ProductServiceApplicationTests extends MongoBaseTest {
                 .returnResult()
                 .getResponseBody();
 
-        assertThat(responseBody.path())
+        assertThat(responseBody.getPath())
                 .isEqualTo(productURI + "/" + productId);
 
-        assertThat(responseBody.message())
+        assertThat(responseBody.getMessage())
                 .isEqualTo("Invalid productId: " + productId);
     }
 
@@ -142,10 +142,10 @@ public class ProductServiceApplicationTests extends MongoBaseTest {
                 .returnResult()
                 .getResponseBody();
 
-        assertThat(responseBody.path())
+        assertThat(responseBody.getPath())
                 .isEqualTo(productURI + "/" + productId);
 
-        assertThat(responseBody.message())
+        assertThat(responseBody.getMessage())
                 .isEqualTo("Failed to convert value of type 'java.lang.String' to required type 'int'; For input string: \"no-integer\"");
     }
 

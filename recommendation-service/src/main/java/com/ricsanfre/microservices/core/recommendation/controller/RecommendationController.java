@@ -22,7 +22,7 @@ public class RecommendationController implements RecommendationRestService {
 
     @Override
     public RecommendationDTO createRecommendation(RecommendationDTO body) {
-        LOG.info("/recommendation API create request recommendationId={}, for productId={}", body.recommendationId(), body.productId());
+        LOG.info("/recommendation API create request recommendationId={}, for productId={}", body.getRecommendationId(), body.getProductId());
         return recommendationService.createRecommendation(body);
     }
 

@@ -44,10 +44,10 @@ public class RecommendationService {
         try {
             Recommendation recommendation = recommendationMapper.toRecommendation(recommendationDTO);
             Recommendation newRecommendation = recommendationRepository.save(recommendation);
-            LOG.debug("createRecommendation: created a recommendation entity: {}/{}", recommendationDTO.productId(), recommendationDTO.recommendationId());
+            LOG.debug("createRecommendation: created a recommendation entity: {}/{}", recommendationDTO.getProductId(), recommendationDTO.getRecommendationId());
             return recommendationMapper.toRecommendationDTO(newRecommendation);
         } catch (DataIntegrityViolationException dataIntegrityViolationException) {
-            throw new InvalidInputException("Duplicate key, Product Id: " + recommendationDTO.productId() + ", Review Id:" + recommendationDTO.recommendationId());
+            throw new InvalidInputException("Duplicate key, Product Id: " + recommendationDTO.getProductId() + ", Review Id:" + recommendationDTO.getRecommendationId());
         }
     }
 

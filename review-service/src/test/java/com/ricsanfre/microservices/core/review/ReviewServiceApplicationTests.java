@@ -65,12 +65,12 @@ public class ReviewServiceApplicationTests extends PostgreBaseTest {
         assertThat(reviews.size())
                 .isEqualTo(3);
 
-        assertThat(reviews.get(0).productId()).isEqualTo(productId);
-        assertThat(reviews.get(0).reviewId()).isEqualTo(1);
-        assertThat(reviews.get(1).productId()).isEqualTo(productId);
-        assertThat(reviews.get(1).reviewId()).isEqualTo(2);
-        assertThat(reviews.get(2).productId()).isEqualTo(productId);
-        assertThat(reviews.get(2).reviewId()).isEqualTo(3);
+        assertThat(reviews.get(0).getProductId()).isEqualTo(productId);
+        assertThat(reviews.get(0).getReviewId()).isEqualTo(1);
+        assertThat(reviews.get(1).getProductId()).isEqualTo(productId);
+        assertThat(reviews.get(1).getReviewId()).isEqualTo(2);
+        assertThat(reviews.get(2).getProductId()).isEqualTo(productId);
+        assertThat(reviews.get(2).getReviewId()).isEqualTo(3);
 
     }
 
@@ -97,11 +97,11 @@ public class ReviewServiceApplicationTests extends PostgreBaseTest {
                 .returnResult()
                 .getResponseBody();
 
-        assertThat(reviewCreated.reviewId()).isEqualTo(reviewId);
-        assertThat(reviewCreated.productId()).isEqualTo(productId);
-        assertThat(reviewCreated.author()).isEqualTo("Author " + reviewId);
-        assertThat(reviewCreated.subject()).isEqualTo("Subject " + reviewId);
-        assertThat(reviewCreated.content()).isEqualTo("Content " + reviewId);
+        assertThat(reviewCreated.getReviewId()).isEqualTo(reviewId);
+        assertThat(reviewCreated.getProductId()).isEqualTo(productId);
+        assertThat(reviewCreated.getAuthor()).isEqualTo("Author " + reviewId);
+        assertThat(reviewCreated.getSubject()).isEqualTo("Subject " + reviewId);
+        assertThat(reviewCreated.getContent()).isEqualTo("Content " + reviewId);
 
         // Check repository has 1 entries
         assertThat(repository.findByProductId(productId).size()).isEqualTo(1);
@@ -120,8 +120,8 @@ public class ReviewServiceApplicationTests extends PostgreBaseTest {
                 .returnResult()
                 .getResponseBody();
 
-        assertThat(error.path()).isEqualTo(reviewURI);
-        assertThat(error.message())
+        assertThat(error.getPath()).isEqualTo(reviewURI);
+        assertThat(error.getMessage())
                 .isEqualTo("Duplicate key, Product Id: 1, Review Id:1");
 
         // Check repository has 1 entries
@@ -152,11 +152,11 @@ public class ReviewServiceApplicationTests extends PostgreBaseTest {
                 .returnResult()
                 .getResponseBody();
 
-        assertThat(reviewCreated.reviewId()).isEqualTo(reviewId);
-        assertThat(reviewCreated.productId()).isEqualTo(productId);
-        assertThat(reviewCreated.author()).isEqualTo("Author " + reviewId);
-        assertThat(reviewCreated.subject()).isEqualTo("Subject " + reviewId);
-        assertThat(reviewCreated.content()).isEqualTo("Content " + reviewId);
+        assertThat(reviewCreated.getReviewId()).isEqualTo(reviewId);
+        assertThat(reviewCreated.getProductId()).isEqualTo(productId);
+        assertThat(reviewCreated.getAuthor()).isEqualTo("Author " + reviewId);
+        assertThat(reviewCreated.getSubject()).isEqualTo("Subject " + reviewId);
+        assertThat(reviewCreated.getContent()).isEqualTo("Content " + reviewId);
 
         // Check repository has 1 entries
         assertThat(repository.findByProductId(productId).size()).isEqualTo(1);
@@ -186,10 +186,10 @@ public class ReviewServiceApplicationTests extends PostgreBaseTest {
                         .returnResult()
                         .getResponseBody();
 
-        assertThat(error.path())
+        assertThat(error.getPath())
                 .isEqualTo(reviewURI);
 
-        assertThat(error.message())
+        assertThat(error.getMessage())
                 .isEqualTo("Required request parameter 'productId' for method parameter type int is not present");
 
     }
@@ -211,10 +211,10 @@ public class ReviewServiceApplicationTests extends PostgreBaseTest {
                 .returnResult()
                 .getResponseBody();
 
-        assertThat(responseBody.path())
+        assertThat(responseBody.getPath())
                 .isEqualTo(reviewURI);
 
-        assertThat(responseBody.message())
+        assertThat(responseBody.getMessage())
                 .isEqualTo("Failed to convert value of type 'java.lang.String' to required type 'int'; For input string: \"nointeger\"");
     }
 
@@ -253,10 +253,10 @@ public class ReviewServiceApplicationTests extends PostgreBaseTest {
                 .returnResult()
                 .getResponseBody();
 
-        assertThat(responseBody.path())
+        assertThat(responseBody.getPath())
                 .isEqualTo(reviewURI);
 
-        assertThat(responseBody.message())
+        assertThat(responseBody.getMessage())
                 .isEqualTo("Invalid productId: " + productId);
 
     }

@@ -46,11 +46,11 @@ public class ProductService {
         try {
             Product product = productMapper.toProduct(productDTO);
             Product newProduct = productRepository.save(product);
-            LOG.debug("createProduct: created a Product entity: {}", productDTO.productId());
+            LOG.debug("createProduct: created a Product entity: {}", productDTO.getProductId());
             return productMapper.toProductDTO(newProduct);
         } catch (DuplicateKeyException ex)
         {
-            throw new InvalidInputException("Duplicate productId: " + productDTO.productId(), ex);
+            throw new InvalidInputException("Duplicate productId: " + productDTO.getProductId(), ex);
         }
     }
 

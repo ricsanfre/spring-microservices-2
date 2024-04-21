@@ -66,11 +66,11 @@ public class ProductCompositeServiceApplicationTests {
                 .returnResult()
                 .getResponseBody();
 
-        assertThat(actual.productId())
+        assertThat(actual.getProductId())
                 .isEqualTo(productId);
-        assertThat(actual.recommendations().size())
+        assertThat(actual.getRecommendations().size())
                 .isEqualTo(1);
-        assertThat(actual.reviews().size())
+        assertThat(actual.getReviews().size())
                 .isEqualTo(1);
 
     }
@@ -91,10 +91,10 @@ public class ProductCompositeServiceApplicationTests {
                 .returnResult()
                 .getResponseBody();
 
-        assertThat(response.path())
+        assertThat(response.getPath())
                 .isEqualTo(URI + "/" + productId);
 
-        assertThat(response.message())
+        assertThat(response.getMessage())
                 .isEqualTo("NOT FOUND: " + productId);
 
     }
@@ -116,10 +116,10 @@ public class ProductCompositeServiceApplicationTests {
                 .returnResult()
                 .getResponseBody();
 
-        assertThat(responseBody.path())
+        assertThat(responseBody.getPath())
                 .isEqualTo(URI + "/" + productId);
 
-        assertThat(responseBody.message())
+        assertThat(responseBody.getMessage())
                 .isEqualTo("INVALID: " + productId);
     }
 }

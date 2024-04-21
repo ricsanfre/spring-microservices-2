@@ -44,29 +44,40 @@ public class ProductCompositeService {
             String serviceAddress) {
 
         // 1. Setup product info
-        int productId = productDTO.productId();
-        String name = productDTO.name();
-        int weight = productDTO.weight();
+        int productId = productDTO.getProductId();
+        String name = productDTO.getName();
+        int weight = productDTO.getWeight();
 
         // 2. Copy summary recommendation info, if available
         List<RecommendationSummaryDTO> recommendationSummaries =
                 (recommendationDTOS == null) ? null : recommendationDTOS.stream()
-                        .map(r -> new RecommendationSummaryDTO(r.recommendationId(), r.author(), r.rate()))
+                        .map(r -> new RecommendationSummaryDTO(
+                                r.getRecommendationId(),
+                                r.getAuthor(),
+                                r.getRate(),
+                                r.getContent()
+                        ))
                         .collect(Collectors.toList());
 
         // 3. Copy summary review info, if available
         List<ReviewSummaryDTO> reviewSummaries =
                 (reviewDTOS == null) ? null : reviewDTOS.stream()
-                        .map(r -> new ReviewSummaryDTO(r.reviewId(), r.author(), r.subject()))
+                        .map(r -> new ReviewSummaryDTO(
+                                r.getReviewId(),
+                                r.getAuthor(),
+                                r.getSubject(),
+                                r.getContent()
+                        ))
                         .collect(Collectors.toList());
 
         // 4. Create info regarding the involved microservices addresses
-        String productAddress = productDTO.serviceAddress();
-        String reviewAddress = (reviewDTOS != null && !reviewDTOS.isEmpty()) ? reviewDTOS.get(0).serviceAddress() : "";
-        String recommendationAddress = (recommendationDTOS != null && !recommendationDTOS.isEmpty()) ? recommendationDTOS.get(0).serviceAddress() : "";
+        String productAddress = productDTO.getServiceAddress();
+        String reviewAddress = (reviewDTOS != null && !reviewDTOS.isEmpty()) ? reviewDTOS.get(0).getServiceAddress() : "";
+        String recommendationAddress = (recommendationDTOS != null && !recommendationDTOS.isEmpty()) ? recommendationDTOS.get(0).getServiceAddress() : "";
         ServiceAddressesDTO serviceAddresses = new ServiceAddressesDTO(serviceAddress, productAddress, reviewAddress, recommendationAddress);
 
         return new ProductAggregateDTO(productId, name, weight, recommendationSummaries, reviewSummaries, serviceAddresses);
 
     }
+
 }

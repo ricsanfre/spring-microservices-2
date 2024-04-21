@@ -48,11 +48,11 @@ public class RecommendationServiceApplicationTests extends MongoBaseTest{
                 .returnResult()
                 .getResponseBody();
 
-        assertThat(recommendationCreated.productId()).isEqualTo(productId);
-        assertThat(recommendationCreated.recommendationId()).isEqualTo(recommendationId);
-        assertThat(recommendationCreated.rate()).isEqualTo(1);
-        assertThat(recommendationCreated.content()).isEqualTo("content");
-        assertThat(recommendationCreated.author()).isEqualTo("author");
+        assertThat(recommendationCreated.getProductId()).isEqualTo(productId);
+        assertThat(recommendationCreated.getRecommendationId()).isEqualTo(recommendationId);
+        assertThat(recommendationCreated.getRate()).isEqualTo(1);
+        assertThat(recommendationCreated.getContent()).isEqualTo("content");
+        assertThat(recommendationCreated.getAuthor()).isEqualTo("author");
 
         // Check repository has 1 entries
         assertThat(recommendationRepository.findByProductId(productId)).isNotEmpty();
@@ -72,7 +72,7 @@ public class RecommendationServiceApplicationTests extends MongoBaseTest{
         assertThat(reviews.size())
                 .isEqualTo(1);
 
-        assertThat(reviews.get(0).productId()).isEqualTo(productId);
+        assertThat(reviews.get(0).getProductId()).isEqualTo(productId);
 
     }
 
@@ -89,10 +89,10 @@ public class RecommendationServiceApplicationTests extends MongoBaseTest{
                         .returnResult()
                         .getResponseBody();
 
-        assertThat(error.path())
+        assertThat(error.getPath())
                 .isEqualTo(recommendationURI);
 
-        assertThat(error.message())
+        assertThat(error.getMessage())
                 .isEqualTo("Required request parameter 'productId' for method parameter type int is not present");
 
     }
@@ -114,10 +114,10 @@ public class RecommendationServiceApplicationTests extends MongoBaseTest{
                 .returnResult()
                 .getResponseBody();
 
-        assertThat(responseBody.path())
+        assertThat(responseBody.getPath())
                 .isEqualTo(recommendationURI);
 
-        assertThat(responseBody.message())
+        assertThat(responseBody.getMessage())
                 .isEqualTo("Failed to convert value of type 'java.lang.String' to required type 'int'; For input string: \"nointeger\"");
     }
 
@@ -156,10 +156,10 @@ public class RecommendationServiceApplicationTests extends MongoBaseTest{
                 .returnResult()
                 .getResponseBody();
 
-        assertThat(responseBody.path())
+        assertThat(responseBody.getPath())
                 .isEqualTo(recommendationURI);
 
-        assertThat(responseBody.message())
+        assertThat(responseBody.getMessage())
                 .isEqualTo("Invalid productId: " + productId);
 
     }

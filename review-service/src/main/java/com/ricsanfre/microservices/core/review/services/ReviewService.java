@@ -47,10 +47,10 @@ public class ReviewService {
         try {
             Review review = reviewMapper.dtoToDao(reviewDto);
             Review newReview = reviewRepository.save(review);
-            LOG.debug("createReview: created a review entity: {}/{}", reviewDto.productId(), reviewDto.reviewId());
+            LOG.debug("createReview: created a review entity: {}/{}", reviewDto.getProductId(), reviewDto.getReviewId());
             return reviewMapper.daoToDto(newReview);
         } catch (DataIntegrityViolationException dataIntegrityViolationException) {
-            throw new InvalidInputException("Duplicate key, Product Id: " + reviewDto.productId() + ", Review Id:" + reviewDto.reviewId());
+            throw new InvalidInputException("Duplicate key, Product Id: " + reviewDto.getProductId() + ", Review Id:" + reviewDto.getReviewId());
 
         }
     }

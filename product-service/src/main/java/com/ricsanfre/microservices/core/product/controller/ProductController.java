@@ -22,7 +22,7 @@ public class ProductController implements ProductRestService {
 
     @Override
     public ProductDTO createProduct(ProductDTO body) {
-        LOG.info("/product API create request for productId={}", body.productId());
+        LOG.info("/product API create request for productId={}", body.getProductId());
         return productService.createProduct(body);
     }
 

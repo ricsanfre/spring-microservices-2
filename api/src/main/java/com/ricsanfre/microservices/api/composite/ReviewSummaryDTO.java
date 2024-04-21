@@ -1,9 +1,16 @@
 package com.ricsanfre.microservices.api.composite;
 
-public record ReviewSummaryDTO(
-        int reviewId,
-        String author,
-        String subject
-) {
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class ReviewSummaryDTO {
+    private int reviewId;
+    private String author;
+    private String subject;
+    private String content;
 
 }

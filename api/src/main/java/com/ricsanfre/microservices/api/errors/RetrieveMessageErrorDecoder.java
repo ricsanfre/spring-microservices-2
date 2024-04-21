@@ -26,10 +26,10 @@ public class RetrieveMessageErrorDecoder implements ErrorDecoder {
         switch (response.status()) {
             // NOT_FOUND
             case 404:
-                return new NotFoundException(message.message() != null ? message.message() : "Not found");
+                return new NotFoundException(message.getMessage() != null ? message.getMessage() : "Not found");
             // BAD_REQUEST
             case 400:
-                return new InvalidInputException(message.message() != null ? message.message() : "Bad Request");
+                return new InvalidInputException(message.getMessage() != null ? message.getMessage() : "Bad Request");
             default:
                 return errorDecoder.decode(methodKey, response);
         }
