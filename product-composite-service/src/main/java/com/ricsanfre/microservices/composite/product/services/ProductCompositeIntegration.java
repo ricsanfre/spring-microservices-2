@@ -9,6 +9,7 @@ import com.ricsanfre.microservices.api.core.review.ReviewRestClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
@@ -30,11 +31,36 @@ public class ProductCompositeIntegration {
         return productClient.getProduct(productId);
     }
 
+    public ProductDTO createProduct(ProductDTO productDTO) {
+        return productClient.createProduct(productDTO);
+    }
+
+    public void deleteProduct(int productId) {
+
+        productClient.deleteProduct(productId);
+    }
+
     public List<RecommendationDTO> getRecommendations(int productId) {
         return recommendationClient.getRecommendations(productId);
     }
 
+    public RecommendationDTO createRecommendation(RecommendationDTO recommendationDTO) {
+        return recommendationClient.createRecommendation(recommendationDTO);
+    }
+
+    public void deleteRecommendations(int productId) {
+        recommendationClient.deleteRecommendations(productId);
+    }
+
+    public ReviewDTO createReview(ReviewDTO reviewDTO) {
+        return reviewClient.createReview(reviewDTO);
+    }
+
     public List<ReviewDTO> getReviews(int productId) {
         return reviewClient.getReviews(productId);
+    }
+
+    public void deleteReviews(int productId) {
+        reviewClient.deleteReviews(productId);
     }
 }

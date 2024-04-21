@@ -34,10 +34,10 @@ public class ProductCompositeService {
         ProductDTO productDTO = productCompositeIntegration.getProduct(productId);
         List<RecommendationDTO> recommendationDTOS = productCompositeIntegration.getRecommendations(productId);
         List<ReviewDTO> reviewDTOS = productCompositeIntegration.getReviews(productId);
-        return createProductAggregate(productDTO, recommendationDTOS, reviewDTOS, serviceUtil.getServiceAddress());
+        return createProductAggregateDTO(productDTO, recommendationDTOS, reviewDTOS, serviceUtil.getServiceAddress());
     }
 
-    private ProductAggregateDTO createProductAggregate(
+    private ProductAggregateDTO createProductAggregateDTO(
             ProductDTO productDTO,
             List<RecommendationDTO> recommendationDTOS,
             List<ReviewDTO> reviewDTOS,
@@ -80,4 +80,47 @@ public class ProductCompositeService {
 
     }
 
+    public void createProduct(ProductAggregateDTO request) {
+
+        ProductDTO productDTO = new ProductDTO(
+                request.getProductId(),
+                request.getName(),
+                request.getWeight());
+
+        productCompositeIntegration.createProduct(productDTO);
+
+        if (request.getReviews() != null) {
+            request.getReviews().forEach( r -> {
+                ReviewDTO review = new ReviewDTO(
+                        request.getProductId(),
+                        r.getReviewId(),
+                        r.getAuthor(),
+                        r.getSubject(),
+                        r.getContent());
+
+                productCompositeIntegration.createReview(review);
+            });
+        }
+
+        if (request.getRecommendations() != null) {
+            request.getRecommendations().forEach( r -> {
+                RecommendationDTO recommendationDTO = new RecommendationDTO(
+                        request.getProductId(),
+                        r.getRecommendationId(),
+                        r.getAuthor(),
+                        r.getRate(),
+                        r.getContent()
+                );
+                productCompositeIntegration.createRecommendation(recommendationDTO);
+            });
+        }
+    }
+
+    public void deleteProduct(int productId) {
+
+        productCompositeIntegration.deleteRecommendations(productId);
+        productCompositeIntegration.deleteReviews(productId);
+        productCompositeIntegration.deleteProduct(productId);
+
+    }
 }

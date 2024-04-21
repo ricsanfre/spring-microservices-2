@@ -20,8 +20,21 @@ public class ProductCompositeController implements ProductCompositeRestService {
 
 
     @Override
+    public void createProduct(ProductAggregateDTO body) {
+        LOG.info("/product API create request");
+        productCompositeService.createProduct(body);
+
+    }
+
+    @Override
     public ProductAggregateDTO getProduct(int productId) {
         LOG.info("/product API request for productId={}", productId);
         return productCompositeService.getProductAggregate(productId);
+    }
+
+    @Override
+    public void deleteProduct(int productId) {
+        LOG.info("/product API delete request for productId={}", productId);
+        productCompositeService.deleteProduct(productId);
     }
 }
