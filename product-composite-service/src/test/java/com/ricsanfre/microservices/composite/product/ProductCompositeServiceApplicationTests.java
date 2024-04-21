@@ -49,6 +49,7 @@ public class ProductCompositeServiceApplicationTests {
                 .thenThrow(new NotFoundException("NOT FOUND: " + PRODUCT_ID_NOT_FOUND));
         when(compositeIntegration.getProduct(PRODUCT_ID_INVALID))
                 .thenThrow(new InvalidInputException("INVALID: " + PRODUCT_ID_INVALID));
+
     }
 
     @Test

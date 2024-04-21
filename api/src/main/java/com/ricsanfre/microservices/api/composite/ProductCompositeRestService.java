@@ -73,6 +73,6 @@ public interface ProductCompositeRestService {
             @ApiResponse(responseCode = "400", description = "${api.responseCodes.badRequest.description}"),
     })
     @DeleteMapping(value = "/product-composite/{productId}")
-    void deleteProduct(@PathVariable int productId);
+    void deleteProduct(@PathVariable("productId") int productId);
 
 }
