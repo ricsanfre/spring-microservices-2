@@ -22,3 +22,36 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
     show-sql: true
+
+# Actuator configuration
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info
+  # Show health details
+  endpoint:
+    health:
+      # Show health details
+      show-details: always
+      # Enable liveness and readiness probes
+      probes:
+        enabled: true
+  # Enabling exposure of env app information in applications.properties file
+  info:
+    env:
+      enabled: true
+  # Adding readiness and liveness probe states in health endpoint
+  health:
+    readiness-state:
+      enabled: true
+    liveness-state:
+      enabled: true
+
+# Configuring env info
+info:
+  app:
+    name: review
+    description: "Review Microservice"
+    version: "1.0"
+  company: ricsanfre.com

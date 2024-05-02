@@ -350,7 +350,7 @@ See details about [maven-plugin-management](https://www.baeldung.com/maven-plugi
   mvn package
   ```
 
-  To push docker images direcly to docker hub
+  To push docker images directly to docker hub
 
   ```shell
   mvn package -Pcicd

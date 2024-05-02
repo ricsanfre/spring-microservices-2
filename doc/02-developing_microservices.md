@@ -425,12 +425,19 @@ A custom decoder can be defined to get information from original Error response 
   }  
   ```
 
+### Integration Testing
+
+[Wiremock](https://wiremock.org/) can be used for Integration testing of Feign clients
+
+TBD
+
 ### References
 
 - [Spring boot MVC error-handling](https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#web.servlet.spring-mvc.error-handling)
 - [Error Handling for REST with Spring](https://www.baeldung.com/exception-handling-for-rest-with-spring)
 - [Retrieve Original Message From Feign ErrorDecoder](https://www.baeldung.com/feign-retrieve-original-message)
 - [Propagating Exceptions With OpenFeign and Spring](https://www.baeldung.com/spring-openfeign-propagate-exception)
+- [Integration Tests With Spring Cloud Netflix and Feign](https://www.baeldung.com/spring-cloud-feign-integration-tests)
 
 
 ## Integration Testing
@@ -839,7 +846,7 @@ See further details in [MapStruct installation instructions](https://mapstruct.o
 
 See installation details in [Testcontainers - JUnit5](https://java.testcontainers.org/quickstart/junit_5_quickstart/)
 
-Also the new [testcontainers built-in support from Spring-boot 3.1](https://docs.spring.io/spring-boot/reference/features/testcontainers.html) need to be added
+The new [testcontainers built-in support from Spring-boot 3.1](https://docs.spring.io/spring-boot/reference/features/testcontainers.html) has to be added
 
 
 - Add dependencies to pom.xml
@@ -852,6 +859,7 @@ Also the new [testcontainers built-in support from Spring-boot 3.1](https://docs
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-testcontainers</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
@@ -884,3 +892,58 @@ Also the new [testcontainers built-in support from Spring-boot 3.1](https://docs
 - [Spring data for JPA](https://spring.io/projects/spring-data-jpa)
 - [MapStruct](https://mapstruct.org/)
 - [Spring-boot 3.1 built-in testcontainers support](https://www.baeldung.com/spring-boot-built-in-testcontainers)
+
+
+## Actuator
+
+- Add dependency to pom.xml
+
+  ```xml
+  <dependencies>
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-actuator</artifactId>
+    </dependency>
+  </dependencies>
+  ```
+  
+- Enable endpoints
+
+  By default, only health web endpoint is exposed at /actuator/health
+
+  Other endpoints like one for getting info or prometheus metrics need to be activated
+
+  ```yaml
+  management:
+    endpoints:
+      web:
+        exposure:
+          include: health, info
+    # Enabling exposure of env app information in applications.properties file
+    info:
+      env:
+        enabled: true
+  
+  endpoint:
+    health:
+      # Show health details
+      # https://docs.spring.io/spring-boot/docs/current/reference/html/actuator.html#actuator.endpoints.health      
+      show-details: always
+      # Enable liveness and readiness probes
+      # https://docs.spring.io/spring-boot/docs/current/reference/html/actuator.html#actuator.endpoints.kubernetes-probes
+      probes:
+        enabled: true
+  # Configuring info endpoint
+  # https://docs.spring.io/spring-boot/docs/current/reference/html/actuator.html#actuator.endpoints.info.custom-application-information
+  info:
+    app:
+      name: product
+      description: "Product Microservice"
+      version: "1.0"
+    company: ricsanfre.com
+  ```
+
+
+### References
+
+- [Actuator Spring Ref doc](https://docs.spring.io/spring-boot/docs/current/reference/html/actuator.html)
