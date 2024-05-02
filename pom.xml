@@ -18,6 +18,7 @@
         <module>product-composite-service</module>
         <module>api</module>
         <module>util</module>
+        <module>eureka-server</module>
     </modules>
 
     <properties>
