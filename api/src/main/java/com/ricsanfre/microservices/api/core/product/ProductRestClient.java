@@ -5,7 +5,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 
 @FeignClient(
         name = "product",
-        url = "${app.product.url}",
+        url = "${app.product.url:#{null}}",
         configuration = {RetrieveMessageErrorDecoder.class}
 )
 public interface ProductRestClient extends ProductRestService {

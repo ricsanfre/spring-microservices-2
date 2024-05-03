@@ -2,19 +2,23 @@
 server:
   port: 8080
 
+spring:
+  application:
+    name: product-composite
+
 # Logging configuration
 logging:
   level:
     root: INFO
 
 # Microservices URL
-app:
-  product:
-    url: http://localhost:8081
-  recommendation:
-    url: http://localhost:8082
-  review:
-    url: http://localhost:8083
+#app:
+#  product:
+#    url: http://localhost:8081
+#  recommendation:
+#    url: http://localhost:8082
+#  review:
+#    url: http://localhost:8083
 
 # Open API
 springdoc:
@@ -108,3 +112,13 @@ info:
     description: "Product-Composite Microservice"
     version: "1.0"
   company: ricsanfre.com
+
+# Eureka client
+eureka:
+  instance:
+    preferIpAddress: true
+  client:
+    fetchRegistry: true
+    registerWithEureka: true
+    serviceUrl:
+      defaultZone: http://localhost:8090/eureka/

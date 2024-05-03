@@ -8,6 +8,8 @@ logging:
     root: INFO
 
 spring:
+  application:
+    name: review
   # PostgreSQL  backend
   datasource:
     password: password
@@ -55,3 +57,13 @@ info:
     description: "Review Microservice"
     version: "1.0"
   company: ricsanfre.com
+
+# Eureka client
+eureka:
+  instance:
+    preferIpAddress: true
+  client:
+    fetchRegistry: true
+    registerWithEureka: true
+    serviceUrl:
+      defaultZone: http://localhost:8090/eureka/

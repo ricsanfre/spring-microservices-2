@@ -5,7 +5,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 
 @FeignClient(
         name = "review",
-        url = "${app.review.url}",
+        url = "${app.review.url:#{null}}",
         configuration = {RetrieveMessageErrorDecoder.class}
 )
 public interface ReviewRestClient extends ReviewRestService {

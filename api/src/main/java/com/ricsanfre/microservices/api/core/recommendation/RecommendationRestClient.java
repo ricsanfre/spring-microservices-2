@@ -5,7 +5,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 
 @FeignClient(
         name = "recommendation",
-        url = "${app.recommendation.url}",
+        url = "${app.recommendation.url:#{null}}",
         configuration = {RetrieveMessageErrorDecoder.class}
 )
 public interface RecommendationRestClient extends RecommendationRestService {
