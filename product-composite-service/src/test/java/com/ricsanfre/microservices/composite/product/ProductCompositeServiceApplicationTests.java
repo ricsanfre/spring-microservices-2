@@ -21,7 +21,10 @@ import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(
+        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+        properties = {"eureka.client.enabled=false"})
+
 public class ProductCompositeServiceApplicationTests {
 
     private static final int PRODUCT_ID_OK = 1;

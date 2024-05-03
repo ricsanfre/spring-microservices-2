@@ -15,7 +15,9 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(
+        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+        properties = {"eureka.client.enabled=false"})
 public class RecommendationServiceApplicationTests extends MongoBaseTest{
     @Autowired
     private WebTestClient webTestClient;

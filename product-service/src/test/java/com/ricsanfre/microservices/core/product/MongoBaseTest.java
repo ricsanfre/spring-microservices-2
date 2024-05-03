@@ -12,7 +12,7 @@ public abstract class MongoBaseTest {
     @ServiceConnection
     private final static MongoDBContainer database = new MongoDBContainer("mongo:7.0.8");
 
-    static {
-        database.start();
-    }
+    //static {
+    //    database.start();
+    //}
 }
