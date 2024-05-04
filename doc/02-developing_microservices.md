@@ -541,6 +541,8 @@ The following Spring/Java technologies will be used
 - [TestContainers](https://java.testcontainers.org/) for automating integration testing
   Testing DB with lightweight containers
 
+- [Flyway](https://flywaydb.org/) for controlling SQL DB Schema creation and migration.
+
 ### PostgreSQL
 
 #### Adding dependencies
@@ -568,26 +570,41 @@ Using docker compose. Add following service:
 services:
   postgres:
     container_name: postgres
-    image: postgres
+    image: postgres:16.2
     environment:
-      POSTGRES_USER: review
+      POSTGRES_USER: ricsanfre
       POSTGRES_PASSWORD: password
-      POSTGRES_DB: review
       PGDATA: /data/postgres
     volumes:
       - postgres:/data/postgres
+      - ./scripts/init-sql:/docker-entrypoint-initdb.d
     ports:
       - "5432:5432"
     networks:
       - db
     restart: unless-stopped
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 networks:
   db:
     driver: bridge
 volumes:
   postgres: 
 ```
-  
+
+PosgreSQL docker image execute all sql scrips on startup 
+Create sql databases and user on start-up
+
+
+```sql
+CREATE USER review with encrypted password 'password';
+CREATE DATABASE review OWNER review;
+GRANT ALL PRIVILEGES ON DATABASE review TO review;
+```
+
 #### Configuring Data Source
 
 Add PosgreSQL data source to `application.yaml`
@@ -623,19 +640,19 @@ spring:
    docker exec -it postgres bash
    ```
 
-3. Initialize postgreSQL database using interactive PosgreSQL cli
+3. Connect postgreSQL database using interactive PosgreSQL cli
 
    ```shell
-   psql -U review
+   psql -U ricsanfre
    
-   CREATE DATABASE review;
+   \c review;
    ```
 
 Other postgreSQL commands
 
    Connect to specific database
    ```shell
-   psql -U review -d database
+   psql -U ricsanfre -d database
    ```
 
    psql commands:
@@ -648,6 +665,23 @@ Other postgreSQL commands
    ```
 
 
+#### Controlling DB SQL Schema creation and migration with Flyway
+
+Flyway can be directly integrated in Spring boot application and execute DB migrations on startup
+https://docs.spring.io/spring-boot/docs/current/reference/html/howto.html#howto.data-initialization.migration-tool.flyway
+
+
+- Add Flyway dependency
+
+  ```xml
+  <dependency>
+    <groupId>org.flywaydb</groupId>
+    <artifactId>flyway-core</artifactId>
+  </dependency>
+  ```
+  
+- Add Schema 
+
 ### MongoDB
 
 - Adding Spring Data for MongoDB
@@ -657,6 +691,37 @@ Other postgreSQL commands
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-data-mongodb</artifactId>
   </dependency>  
+  ```
+
+- Add sql init database script, `V1__Init_DB.sql` to resources/db/migration
+
+  ```sql
+  CREATE TABLE review (
+                               id BIGSERIAL PRIMARY KEY,
+                               product_id integer NOT NULL,
+                               review_id integer NOT NULL,
+                               version integer NOT NULL,
+                               author character varying(255),
+                               content character varying(255),
+                               subject character varying(255)
+  );
+  
+  --
+  -- Adding unique constraint
+  --
+  
+  ALTER TABLE ONLY review
+  ADD CONSTRAINT reviews_unique_idx UNIQUE (product_id, review_id);
+  ```
+
+- Set JPA Hibernate's ddl-auto property to `validate`
+  
+  ```yaml
+  spring:
+    jpa:
+      hibernate:
+        # Using flyway to create schema
+        ddl-auto: validate
   ```
 
 #### Adding MongoDB dev environment
@@ -892,7 +957,8 @@ The new [testcontainers built-in support from Spring-boot 3.1](https://docs.spri
 - [Spring data for JPA](https://spring.io/projects/spring-data-jpa)
 - [MapStruct](https://mapstruct.org/)
 - [Spring-boot 3.1 built-in testcontainers support](https://www.baeldung.com/spring-boot-built-in-testcontainers)
-
+- [Flyway](https://flywaydb.org/)
+- [Spring Boot - Flyway migrations on startup](https://docs.spring.io/spring-boot/docs/current/reference/html/howto.html#howto.data-initialization.migration-tool.flyway)
 
 ## Actuator
 

@@ -3,12 +3,12 @@ services:
     container_name: postgres
     image: postgres:16.2
     environment:
-      POSTGRES_USER: review
+      POSTGRES_USER: ricsanfre
       POSTGRES_PASSWORD: password
-      POSTGRES_DB: review
       PGDATA: /data/postgres
     volumes:
       - postgres:/data/postgres
+      - ./scripts/init-sql:/docker-entrypoint-initdb.d
     ports:
       - "5432:5432"
     networks:
@@ -58,11 +58,11 @@ services:
       start_period: 10s
 
   product:
-    container_name: product
+    # container_name: product
     image: ricsanfre/product-service
     mem_limit: 512m
-    ports:
-      - "8081:8080"
+    #ports:
+    #  - "8081:8080"
     environment:
       SERVER_PORT: 8080
       SPRING_DATA_MONGODB_HOST: mongodb
@@ -86,8 +86,8 @@ services:
     # container_name: review
     image: ricsanfre/review-service
     mem_limit: 512m
-    ports:
-      - "8083:8080"
+    # ports:
+    #  - "8083:8080"
     environment:
       SERVER_PORT: 8080
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/review
@@ -108,11 +108,11 @@ services:
       start_period: 10s
 
   recommendation:
-    container_name: recommendation
+    # container_name: recommendation
     image: ricsanfre/recommendation-service
     mem_limit: 512m
-    ports:
-      - "8082:8080"
+    # ports:
+    #  - "8082:8080"
     environment:
       SERVER_PORT: 8080
       SPRING_DATA_MONGODB_HOST: mongodb
@@ -133,16 +133,16 @@ services:
       start_period: 10s
 
   product-composite:
-    container_name: product-composite
+    # container_name: product-composite
     image: ricsanfre/product-composite-service
     mem_limit: 512m
     ports:
       - "8080:8080"
     environment:
       SERVER_PORT: 8080
-      APP_PRODUCT_URL: http://product:8080
-      APP_REVIEW_URL: http://review:8080
-      APP_RECOMMENDATION_URL: http://recommendation:8080
+      # APP_PRODUCT_URL: http://product:8080
+      # APP_REVIEW_URL: http://review:8080
+      # APP_RECOMMENDATION_URL: http://recommendation:8080
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka:8080/eureka
     networks:
       - spring
