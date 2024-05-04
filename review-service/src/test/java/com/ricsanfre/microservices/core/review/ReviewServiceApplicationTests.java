@@ -3,7 +3,9 @@ package com.ricsanfre.microservices.core.review;
 import com.ricsanfre.microservices.api.core.review.ReviewDTO;
 import com.ricsanfre.microservices.api.errors.ApiErrorResponse;
 import com.ricsanfre.microservices.core.review.db.repository.ReviewRepository;
+import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,7 +21,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-        properties = {"eureka.client.enabled=false"})
+        properties = {
+                "eureka.client.enabled=false",
+                "spring.flyway.clean-disabled=false"
+        })
 public class ReviewServiceApplicationTests extends PostgreBaseTest {
     @Autowired
     private WebTestClient webTestClient;
@@ -27,12 +32,21 @@ public class ReviewServiceApplicationTests extends PostgreBaseTest {
     @Autowired
     private ReviewRepository repository;
 
+    @Autowired
+    private Flyway flyway;
 
     private static final String reviewURI = "/review";
 
+
     @BeforeEach
     void setupDb() {
-        repository.deleteAll();
+        // Clean database before each test
+        // repository.deleteAll();
+
+        // Flyway migration
+        // https://maciejwalkowiak.com/blog/spring-boot-flyway-clear-database-integration-tests/
+        flyway.clean();
+        flyway.migrate();
     }
 
     @Test

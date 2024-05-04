@@ -33,6 +33,9 @@ public class Review {
             strategy = GenerationType.SEQUENCE,
             generator = "review_id_seq"
     )
+    @Column(
+            columnDefinition = "BIGSERIAL"
+    )
     private int id;
 
     /*
