@@ -40,6 +40,23 @@ services:
       retries: 3
       start_period: 20s
 
+  eureka:
+    container_name: eureka-server
+    image: ricsanfre/eureka-server
+    mem_limit: 512m
+    ports:
+      - "8090:8080"
+    environment:
+      SERVER_PORT: 8080
+    networks:
+      - spring
+    healthcheck:
+      test: "curl --fail --silent localhost:8080/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
   product:
     container_name: product
     image: ricsanfre/product-service
@@ -49,11 +66,14 @@ services:
     environment:
       SERVER_PORT: 8080
       SPRING_DATA_MONGODB_HOST: mongodb
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka:8080/eureka
     networks:
       - spring
       - db
     depends_on:
       mongodb:
+        condition: service_healthy
+      eureka:
         condition: service_healthy
     healthcheck:
       test: "curl --fail --silent localhost:8080/actuator/health/readiness | grep UP || exit 1"
@@ -63,7 +83,7 @@ services:
       start_period: 10s
 
   review:
-    container_name: review
+    # container_name: review
     image: ricsanfre/review-service
     mem_limit: 512m
     ports:
@@ -71,11 +91,14 @@ services:
     environment:
       SERVER_PORT: 8080
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/review
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka:8080/eureka
     networks:
       - spring
       - db
     depends_on:
       postgres:
+        condition: service_healthy
+      eureka:
         condition: service_healthy
     healthcheck:
       test: "curl --fail --silent localhost:8080/actuator/health/readiness | grep UP || exit 1"
@@ -93,11 +116,14 @@ services:
     environment:
       SERVER_PORT: 8080
       SPRING_DATA_MONGODB_HOST: mongodb
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka:8080/eureka
     networks:
       - spring
       - db
     depends_on:
       mongodb:
+        condition: service_healthy
+      eureka:
         condition: service_healthy
     healthcheck:
       test: "curl --fail --silent localhost:8080/actuator/health/readiness | grep UP || exit 1"
@@ -117,10 +143,13 @@ services:
       APP_PRODUCT_URL: http://product:8080
       APP_REVIEW_URL: http://review:8080
       APP_RECOMMENDATION_URL: http://recommendation:8080
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka:8080/eureka
     networks:
       - spring
       - db
     depends_on:
+      eureka:
+        condition: service_healthy
       product:
         condition: service_healthy
       recommendation:
