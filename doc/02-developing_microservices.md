@@ -572,7 +572,7 @@ services:
     container_name: postgres
     image: postgres:16.2
     environment:
-      POSTGRES_USER: ricsanfre
+      POSTGRES_USER: root
       POSTGRES_PASSWORD: password
       PGDATA: /data/postgres
     volumes:
@@ -643,7 +643,7 @@ spring:
 3. Connect postgreSQL database using interactive PosgreSQL cli
 
    ```shell
-   psql -U ricsanfre
+   psql -U root
    
    \c review;
    ```
