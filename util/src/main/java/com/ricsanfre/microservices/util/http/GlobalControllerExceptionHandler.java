@@ -3,6 +3,7 @@ package com.ricsanfre.microservices.util.http;
 import com.ricsanfre.microservices.api.errors.ApiErrorResponse;
 import com.ricsanfre.microservices.api.errors.exceptions.InvalidInputException;
 import com.ricsanfre.microservices.api.errors.exceptions.NotFoundException;
+import com.ricsanfre.microservices.api.errors.exceptions.ServiceNotAvailableException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,6 +68,21 @@ public class GlobalControllerExceptionHandler {
 
         );
         return new ResponseEntity<>(apiErrorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
+    @ExceptionHandler( value = ServiceNotAvailableException.class )
+    public ResponseEntity<Object> handleServiceNotAvailable(
+            ServiceNotAvailableException e,
+            HttpServletRequest request) {
+        ApiErrorResponse apiErrorResponse = new ApiErrorResponse(
+                ZonedDateTime.now().toOffsetDateTime().toString(),
+                request.getRequestURI(),
+                HttpStatus.SERVICE_UNAVAILABLE,
+                e.getMessage()
+
+        );
+        return new ResponseEntity<>(apiErrorResponse, HttpStatus.SERVICE_UNAVAILABLE);
     }
 
     @ExceptionHandler(value = Exception.class)
