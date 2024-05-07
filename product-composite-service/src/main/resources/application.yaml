@@ -10,6 +10,7 @@ spring:
 logging:
   level:
     root: INFO
+    com.ricsanfre.microservices.api: DEBUG
 
 # Microservices URL
 #app:

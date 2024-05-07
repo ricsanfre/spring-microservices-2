@@ -1,13 +1,16 @@
 package com.ricsanfre.microservices.composite.product.services;
 
+import com.ricsanfre.microservices.api.actuator.HealthDTO;
 import com.ricsanfre.microservices.api.core.product.ProductDTO;
 import com.ricsanfre.microservices.api.core.product.ProductRestClient;
 import com.ricsanfre.microservices.api.core.recommendation.RecommendationDTO;
 import com.ricsanfre.microservices.api.core.recommendation.RecommendationRestClient;
 import com.ricsanfre.microservices.api.core.review.ReviewDTO;
 import com.ricsanfre.microservices.api.core.review.ReviewRestClient;
+import com.ricsanfre.microservices.api.errors.exceptions.ServiceNotAvailableException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.actuate.health.Health;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -63,4 +66,47 @@ public class ProductCompositeIntegration {
     public void deleteReviews(int productId) {
         reviewClient.deleteReviews(productId);
     }
+
+    public Health getRecommendationServiceHealth()   {
+        try {
+            if (recommendationClient.getHealth().getStatus().equals("UP")) {
+                return new Health.Builder().up().build();
+            } else {
+                return new Health.Builder().down().build();
+            }
+        } catch (ServiceNotAvailableException e){
+            return new Health.Builder().down().build();
+
+        }
+    }
+
+    public Health getReviewServiceHealth()   {
+
+        try {
+            if (reviewClient.getHealth().getStatus().equals("UP")) {
+                return new Health.Builder().up().build();
+            } else {
+                return new Health.Builder().down().build();
+            }
+        } catch (ServiceNotAvailableException e){
+            return new Health.Builder().down().build();
+
+        }
+    }
+    public Health getProductServiceHealth()   {
+        try {
+            if (productClient.getHealth().getStatus().equals("UP")) {
+                return new Health.Builder().up().build();
+            } else {
+                return new Health.Builder().down().build();
+            }
+        } catch (ServiceNotAvailableException e){
+            return new Health.Builder().down().build();
+
+        }
+    }
+
+
+
+
 }
