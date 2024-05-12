@@ -47,7 +47,6 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
-
         <!-- Webflux for integration testing
          https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#features.testing.spring-boot-applications.with-running-server
          Integration Test with running server requires web-flux
@@ -76,7 +75,6 @@
             <artifactId>util</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
-
         <!-- Open API support: Automating generation of documentation
 			https://springdoc.org/
 		-->

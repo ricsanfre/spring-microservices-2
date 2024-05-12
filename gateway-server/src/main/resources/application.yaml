@@ -1,0 +1,108 @@
+# Server Port
+server:
+  port: 8091
+
+# Logging configuration
+logging:
+  level:
+    root: INFO
+    # Enabling Cloud Gateway traces
+    org.springframework.cloud.gateway.route.RouteDefinitionRouteLocator: INFO
+    org.springframework.cloud.gateway: TRACE
+
+
+app:
+  eureka:
+    server: localhost
+    port: 8090
+
+spring:
+  application:
+    name: gateway-server
+  # Spring Cloud Gateway Routing configuration
+  cloud:
+    gateway:
+      routes:
+      - id: product-composite
+        uri: lb://PRODUCT-COMPOSITE
+        predicates:
+        - Path=/product-composite/**
+      - id: product-composite-swagger-ui
+        uri: lb://PRODUCT-COMPOSITE
+        predicates:
+        - Path=/openapi/**
+      - id: product
+        uri: lb://PRODUCT
+        predicates:
+        - Path=/product/**
+      - id: recommendation
+        uri: lb://RECOMMENDATION
+        predicates:
+        - Path=/recommendation/**
+      - id: review
+        uri: lb://REVIEW
+        predicates:
+        - Path=/review/**
+      - id: eureka-api
+        uri: http://${app.eureka.server}:${app.eureka.port}
+        predicates:
+        - Path=/eureka/api/{segment}
+        filters:
+        - SetPath=/eureka/{segment}
+      - id: eureka-web-start
+        uri: http://${app.eureka.server}:${app.eureka.port}
+        predicates:
+        - Path=/eureka/web
+        filters:
+        - SetPath=/
+      - id: eureka-web-other
+        uri: http://${app.eureka.server}:${app.eureka.port}
+        predicates:
+        - Path=/eureka/**
+
+# Actuator configuration
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info, gateway
+  # Show health details
+  endpoint:
+    health:
+      # Show health details
+      show-details: always
+      # Enable liveness and readiness probes
+      probes:
+        enabled: true
+    # Enable gateway endpoint
+    gateway:
+      enabled: true
+
+  # Enabling exposure of env app information in applications.properties file
+  info:
+    env:
+      enabled: true
+  # Adding readiness and liveness probe states in health endpoint
+  health:
+    readiness-state:
+      enabled: true
+    liveness-state:
+      enabled: true
+
+# Configuring env info
+info:
+  app:
+    name: gateway-server
+    description: "Gateway Server Microservice"
+    version: "1.0"
+  company: ricsanfre.com
+
+# Eureka client
+eureka:
+  instance:
+    preferIpAddress: true
+  client:
+    fetchRegistry: true
+    registerWithEureka: true
+    serviceUrl:
+      defaultZone: http://${app.eureka.server}:${app.eureka.port}/eureka/
