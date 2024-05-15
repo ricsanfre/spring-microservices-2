@@ -13,7 +13,7 @@ services:
     ports:
       - "5432:5432"
     networks:
-      - db
+      - microservices
     restart: unless-stopped
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready" ]
@@ -33,7 +33,7 @@ services:
     ports:
       - "27017:27017"
     networks:
-      - db
+      - microservices
     restart: unless-stopped
     healthcheck:
       test: echo 'db.runCommand({find:"app_db_name.devUser"}).ok' | mongosh --authenticationDatabase admin --host localhost -u ricsanfre  -p password admin --quiet | grep -q 1
@@ -51,7 +51,7 @@ services:
     environment:
       SERVER_PORT: 8080
     networks:
-      - spring
+      - microservices
     healthcheck:
       test: "curl --fail --silent localhost:8080/actuator/health/readiness | grep UP || exit 1"
       interval: 10s
@@ -70,7 +70,7 @@ services:
       APP_EUREKA_SERVER: eureka
       APP_EUREKA_PORT: 8080
     networks:
-      - spring
+      - microservices
     depends_on:
       eureka:
         condition: service_healthy
@@ -90,10 +90,9 @@ services:
     environment:
       SERVER_PORT: 8080
       SPRING_DATA_MONGODB_HOST: mongodb
-      # EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka:8080/eureka
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka:8080/eureka
     networks:
-      - spring
-      - db
+      - microservices
     depends_on:
       mongodb:
         condition: service_healthy
@@ -117,8 +116,7 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/review
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka:8080/eureka
     networks:
-      - spring
-      - db
+      - microservices
     depends_on:
       postgres:
         condition: service_healthy
@@ -142,8 +140,7 @@ services:
       SPRING_DATA_MONGODB_HOST: mongodb
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka:8080/eureka
     networks:
-      - spring
-      - db
+      - microservices
     depends_on:
       mongodb:
         condition: service_healthy
@@ -168,10 +165,9 @@ services:
       # APP_REVIEW_URL: http://review:8080
       # APP_RECOMMENDATION_URL: http://recommendation:8080
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka:8080/eureka
-      SERVER_FORWARD-HEADERS-STRATEGY: framework
+      # SERVER_FORWARD-HEADERS-STRATEGY: framework
     networks:
-      - spring
-      - db
+      - microservices
     depends_on:
       eureka:
         condition: service_healthy
@@ -188,9 +184,7 @@ services:
       retries: 10
       start_period: 10s
 networks:
-  db:
-    driver: bridge
-  spring:
+  microservices:
     driver: bridge
 
 volumes:
